@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale } from 'lucide-react';
+import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy } from 'lucide-react';
 
 function App() {
   const [expandedSections, setExpandedSections] = useState({});
@@ -795,9 +795,9 @@ async def get_observations(
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Option 1: Eigenentwicklung */}
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-                    <h3 className="font-bold text-lg mb-2">Option 1: Eigenentwicklung (Intern)</h3>
+                    <h3 className="font-bold text-lg mb-2">123 ---Option 1: Eigenentwicklung (Intern)</h3>
                     <p className="text-sm mb-4">Diese Option nutzt vorhandene Open-Source-Bibliotheken (z.B. Pandas in Python) und interne Personalressourcen. Die Logik für Validierung und Konsolidierung wird spezifisch für die Anforderungen des Projekts programmiert.</p>
-                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen (Interner Satz: 300 €/Tag)</h4>
+                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen<br/>(Interner Satz: 300 €/Tag)</h4>
                     <table className="w-full text-sm mb-4">
                       <thead className="text-left">
                         <tr className="border-b dark:border-gray-600">
@@ -831,7 +831,21 @@ async def get_observations(
                   {/* Option 2: Softwarekauf */}
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
                     <h3 className="font-bold text-lg mb-2">Option 2: Einkauf kommerzieller Software</h3>
-                    <p className="text-sm mb-4">Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <p className="text-sm mb-4">--123-- Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <table className="w-full text-sm mb-4">
+                      <thead className="text-left">
+                        <tr className="border-b dark:border-gray-600">
+                          <th className="py-1">Anbieter / Produkt</th>
+                          <th className="py-1">Kosten (1. Jahr)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b dark:border-gray-700"><td>Talend Data Quality</td><td>ab 15.000 - 40.000 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Informatica DQ</td><td>ab 20.000 - 50.000 €+</td></tr>
+                        <tr className="font-bold"><td>Gesamtkosten (marktüblich)</td><td>ca. 8.000 - 40.000 €+</td></tr>
+                      </tbody>
+                    </table>
+                    
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
                     <ul className="list-disc list-inside text-sm space-y-1 mt-1">
                       <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
@@ -862,7 +876,7 @@ async def get_observations(
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
                     <h3 className="font-bold text-lg mb-2">Option 1: Eigenentwicklung (Intern)</h3>
                     <p className="text-sm mb-4">Diese Option nutzt vorhandene Open-Source-Bibliotheken (z.B. Pandas in Python) und interne Personalressourcen. Die Logik für Validierung und Konsolidierung wird spezifisch für die Anforderungen des Projekts programmiert.</p>
-                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen (Interner Satz: 300 €/Tag)</h4>
+                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen<br/>(Interner Satz: 300 €/Tag)</h4>
                     <table className="w-full text-sm mb-4">
                       <thead className="text-left">
                         <tr className="border-b dark:border-gray-600">
@@ -897,6 +911,20 @@ async def get_observations(
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
                     <h3 className="font-bold text-lg mb-2">Option 2: Einkauf kommerzieller Software</h3>
                     <p className="text-sm mb-4">Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen</h4>
+                    <table className="w-full text-sm mb-4">
+                      <thead className="text-left">
+                        <tr className="border-b dark:border-gray-600">
+                          <th className="py-1">Anbieter / Produkt</th>
+                          <th className="py-1">Kosten (1. Jahr)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b dark:border-gray-700"><td>Talend Data Quality</td><td>ab 15.000 - 40.000 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Informatica DQ</td><td>ab 20.000 - 50.000 €+</td></tr>
+                        <tr className="font-bold"><td>Gesamtkosten (marktüblich)</td><td>ca. 8.000 - 40.000 €+</td></tr>
+                      </tbody>
+                    </table>
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
                     <ul className="list-disc list-inside text-sm space-y-1 mt-1">
                       <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
@@ -923,6 +951,114 @@ async def get_observations(
               <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
                 <h3 className="font-bold text-lg mb-2">Selber machen oder kaufen?</h3>
                 <p className="text-sm">Bei der Entwicklung einer solchen Plattform stellt sich immer die Frage: Baut man die Software selbst oder kauft man eine fertige Lösung? Für dieses Projekt wurde entschieden, die Software selbst zu entwickeln. Das ist langfristig günstiger, flexibler und das Wissen darüber, wie alles funktioniert, bleibt hier bei uns im Landkreis.</p>
+              </div>
+            )
+          }
+        }
+      ]
+    }, // <--- Wichtig: Komma nach dem letzten vorherigen Block!
+    {
+      id: 'referenzen',
+      title: 'Referenzen & Quellen',
+      icon: <BookCopy className="w-6 h-6" />,
+      intro: {
+        experte: 'Eine Sammlung der wissenschaftlichen, technischen und regulatorischen Quellen, die als Grundlage für dieses Projekt dienen.',
+        verwaltung: 'Eine Sammlung der wissenschaftlichen, technischen und regulatorischen Quellen, die als Grundlage für dieses Projekt dienen.',
+        buerger: 'Hier finden Sie Links zu weiterführenden Informationen zum Thema Wasserqualität und den Grundlagen dieses Projekts.'
+      },
+      sections: [
+        {
+          id: 'source-list',
+          title: 'Quellenverzeichnis',
+          content: {
+            experte: (
+              <div className="space-y-6 text-sm">
+                <div>
+                  <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Wissenschaftliche Publikationen</h5>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10061935/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Advances in Catchment Science, Hydrochemistry, and Aquatic...</a></li>
+                    <li><a href="https://pubs.acs.org/doi/10.1021/acs.est.2c07798" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Leveraging High-Frequency Water Quality Data... (ACS Publications)</a></li>
+                    <li><a href="https://open-research-europe.ec.europa.eu/articles/4-244" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">SentemQC - A novel and cost-efficient method... (Open Research Europe)</a></li>
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9360045/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Chlorophyll soft-sensor based on machine learning models...</a></li>
+                    <li><a href="https://pubs.acs.org/doi/10.1021/es504773x" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">High-Speed Limnology: Using Advanced Sensors...</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Behörden & Standards</h5>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><a href="https://www.umweltbundesamt.de/daten/wasser/wasserwirtschaft/qualitaet-des-trinkwassers-aus-zentralen" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Qualität des Trinkwassers... (Umweltbundesamt)</a></li>
+                    <li><a href="https://www.usgs.gov/publications/guidelines-and-standard-procedures-high-frequency-groundwater-quality-monitoring" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Guidelines for high-frequency monitoring... (USGS.gov)</a></li>
+                    <li><a href="https://www2.gov.bc.ca/assets/gov/environment/air-land-water/water/waterquality/monitoring-water-quality/water-stewardship/stewardship_data_qaqc_guidelines.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Water Quality Data QA/QC Guidelines (Gov.bc.ca)</a></li>
+                    <li><a href="https://www.lanuv.nrw.de/fileadmin/lanuvpubl/4_arbeitsblaetter/40025.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Fließgewässertypenkarten NRW (LANUV)</a></li>
+                    <li><a href="https://www.lawa.de/documents/lawa-rakon-teil-b-i-gewtyp-ref-210806-final-barrierefrei_1689850884.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Rahmenkonzeption Monitoring (LAWA)</a></li>
+                    <li><a href="https://www.epa.gov/choose-fish-and-shellfish-wisely/data-verification-reporting-and-validation" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Data Verification, Reporting and Validation (US EPA)</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Weitere Quellen & Technische Dokumentation</h5>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><a href="https://serc.carleton.edu/eddie/teaching_materials/modules/module9.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Using High-Frequency Data to Manage Water Quality (SERC)</a></li>
+                    <li><a href="https://de.wikipedia.org/wiki/PH-Wert" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">pH-Wert - Wikipedia</a></li>
+                    <li><a href="https://www.fondriest.com/environmental-measurements/parameters/water-quality/water-temperature/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Water Temperature (Fondriest)</a></li>
+                    <li>WAMO-Datensatzbeschreibung_UserinerSee_04-2025.xlsx</li>
+                  </ul>
+                </div>
+              </div>
+            ),
+            verwaltung: (
+              <div className="space-y-6 text-sm">
+                <div>
+                  <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Wissenschaftliche Publikationen</h5>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10061935/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Advances in Catchment Science, Hydrochemistry, and Aquatic...</a></li>
+                    <li><a href="https://pubs.acs.org/doi/10.1021/acs.est.2c07798" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Leveraging High-Frequency Water Quality Data... (ACS Publications)</a></li>
+                    <li><a href="https://open-research-europe.ec.europa.eu/articles/4-244" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">SentemQC - A novel and cost-efficient method... (Open Research Europe)</a></li>
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9360045/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Chlorophyll soft-sensor based on machine learning models...</a></li>
+                    <li><a href="https://pubs.acs.org/doi/10.1021/es504773x" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">High-Speed Limnology: Using Advanced Sensors...</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Behörden & Standards</h5>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><a href="https://www.umweltbundesamt.de/daten/wasser/wasserwirtschaft/qualitaet-des-trinkwassers-aus-zentralen" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Qualität des Trinkwassers... (Umweltbundesamt)</a></li>
+                    <li><a href="https://www.usgs.gov/publications/guidelines-and-standard-procedures-high-frequency-groundwater-quality-monitoring" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Guidelines for high-frequency monitoring... (USGS.gov)</a></li>
+                    <li><a href="https://www2.gov.bc.ca/assets/gov/environment/air-land-water/water/waterquality/monitoring-water-quality/water-stewardship/stewardship_data_qaqc_guidelines.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Water Quality Data QA/QC Guidelines (Gov.bc.ca)</a></li>
+                    <li><a href="https.lanuv.nrw.de/fileadmin/lanuvpubl/4_arbeitsblaetter/40025.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Fließgewässertypenkarten NRW (LANUV)</a></li>
+                    <li><a href="https://www.lawa.de/documents/lawa-rakon-teil-b-i-gewtyp-ref-210806-final-barrierefrei_1689850884.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Rahmenkonzeption Monitoring (LAWA)</a></li>
+                    <li><a href="https://www.epa.gov/choose-fish-and-shellfish-wisely/data-verification-reporting-and-validation" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Data Verification, Reporting and Validation (US EPA)</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Weitere Quellen & Technische Dokumentation</h5>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><a href="https://serc.carleton.edu/eddie/teaching_materials/modules/module9.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Using High-Frequency Data to Manage Water Quality (SERC)</a></li>
+                    <li><a href="https://de.wikipedia.org/wiki/PH-Wert" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">pH-Wert - Wikipedia</a></li>
+                    <li><a href="https://www.fondriest.com/environmental-measurements/parameters/water-quality/water-temperature/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Water Temperature (Fondriest)</a></li>
+                    <li>WAMO-Datensatzbeschreibung_UserinerSee_04-2025.xlsx</li>
+                  </ul>
+                </div>
+              </div>
+            ),
+            buerger: (
+              <div className="space-y-4 text-sm">
+                <p className="mb-2">Hier finden Sie eine Auswahl an Links zu allgemeinen Informationen rund um das Thema Wasserqualität:</p>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>
+                    <a href="https://www.umweltbundesamt.de/themen/wasser/trinkwasser/trinkwasserqualitaet/daten-zur-trinkwasserqualitaet" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      Daten zur Trinkwasserqualität in Deutschland (Umweltbundesamt)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://de.wikipedia.org/wiki/PH-Wert" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      Was ist der pH-Wert? (Wikipedia)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.studyflix.de/biologie/oekosystem-see-2525" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      Erklärung zum Ökosystem See (Studyflix)
+                    </a>
+                  </li>
+                </ul>
               </div>
             )
           }
