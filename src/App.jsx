@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon } from 'lucide-react';
+import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale } from 'lucide-react';
 
 function App() {
   const [expandedSections, setExpandedSections] = useState({});
@@ -81,27 +81,54 @@ function App() {
           id: 'architecture',
           title: 'Systemarchitektur',
           content: {
-            experte: (
+          experte: (
+            <>
+              {/* KORRIGIERTER EINFÜHRUNGSBLOCK */}
+              <div className="mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <h5 className="font-bold text-lg mb-4 text-blue-600 dark:text-blue-400">Ein Paradigmenwechsel in der Gewässerüberwachung</h5>
+                <p className="text-sm mb-4 text-gray-700 dark:text-gray-300">
+                  Die Installation automatischer Messstationen zur stündlichen Erfassung von Wasserqualitätsparametern markiert einen fundamentalen Wandel. Im Gegensatz zur traditionellen, niederfrequenten Beprobung ermöglichen hochfrequente Datenreihen ein tiefgreifendes, mechanistisches Verständnis der komplexen Prozesse in aquatischen Ökosystemen.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4 text-center">
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                    <Beaker className="w-6 h-6 mx-auto mb-2 text-purple-500" />
+                    <h6 className="font-semibold text-sm">Forschung</h6>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Benötigt detaillierte, qualitätsgesicherte Daten zur Prozessanalyse.</p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                    <Building2 className="w-6 h-6 mx-auto mb-2 text-blue-500" />
+                    <h6 className="font-semibold text-sm">Behörden & Wirtschaft</h6>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Benötigen standardisierte Kennzahlen für Berichte und Planung.</p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                    <Users className="w-6 h-6 mx-auto mb-2 text-green-500" />
+                    <h6 className="font-semibold text-sm">Öffentlichkeit</h6>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Benötigt verständliche Indikatoren zum Zustand des Gewässers.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Alter Inhaltsblock */}
               <div className="space-y-4">
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">Technische Komponenten</h5>
                   <pre className="text-sm overflow-x-auto">
-{`# Apache Kafka Setup für Datenstreaming
-version: '3.8'
-services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092`}
+        {`# Apache Kafka Setup für Datenstreaming
+        version: '3.8'
+        services:
+        zookeeper:
+        image: confluentinc/cp-zookeeper:7.4.0
+        environment:
+          ZOOKEEPER_CLIENT_PORT: 2181
+          
+        kafka:
+        image: confluentinc/cp-kafka:7.4.0
+        depends_on:
+          - zookeeper
+        environment:
+          KAFKA_BROKER_ID: 1
+          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092`}
                   </pre>
                 </div>
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
@@ -130,60 +157,61 @@ services:
                   </div>
                 </div>
               </div>
-            ),
-            verwaltung: (
-              <div className="space-y-4">
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                  <h5 className="font-semibold mb-2">Systemübersicht</h5>
-                  <ul className="list-disc list-inside space-y-2">
-                    <li>Automatische Datenerfassung alle 60 Minuten</li>
-                    <li>Sichere Übertragung über verschlüsselte Verbindungen</li>
-                    <li>Zwischenspeicherung bei Verbindungsproblemen</li>
-                    <li>Automatische Wiederholung bei Übertragungsfehlern</li>
-                  </ul>
-                </div>
-                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                  <h5 className="font-semibold mb-2">Vorteile für die Verwaltung</h5>
-                  <ul className="list-disc list-inside space-y-2">
-                    <li>Keine manuelle Dateneingabe erforderlich</li>
-                    <li>Echtzeit-Überwachung möglich</li>
-                    <li>Automatische Fehlererkennung</li>
-                    <li>Zentrale Datenverwaltung</li>
-                  </ul>
-                </div>
+            </>
+          ),
+          verwaltung: (
+            <div className="space-y-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h5 className="font-semibold mb-2">Systemübersicht</h5>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Automatische Datenerfassung alle 60 Minuten</li>
+                  <li>Sichere Übertragung über verschlüsselte Verbindungen</li>
+                  <li>Zwischenspeicherung bei Verbindungsproblemen</li>
+                  <li>Automatische Wiederholung bei Übertragungsfehlern</li>
+                </ul>
               </div>
-            ),
-            buerger: (
-              <div className="space-y-4">
-                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                  <h5 className="font-semibold mb-2">So funktioniert's</h5>
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0">1</div>
-                      <div>
-                        <p className="font-medium">Messung im See</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Die Sensoren messen stündlich Temperatur, pH-Wert und weitere Werte</p>
-                      </div>
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                <h5 className="font-semibold mb-2">Vorteile für die Verwaltung</h5>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Keine manuelle Dateneingabe erforderlich</li>
+                  <li>Echtzeit-Überwachung möglich</li>
+                  <li>Automatische Fehlererkennung</li>
+                  <li>Zentrale Datenverwaltung</li>
+                </ul>
+              </div>
+            </div>
+          ),
+          buerger: (
+            <div className="space-y-4">
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                <h5 className="font-semibold mb-2">So funktioniert's</h5>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0">1</div>
+                    <div>
+                      <p className="font-medium">Messung im See</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Die Sensoren messen stündlich Temperatur, pH-Wert und weitere Werte</p>
                     </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0">2</div>
-                      <div>
-                        <p className="font-medium">Automatische Übertragung</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Die Daten werden sicher an unsere Server gesendet</p>
-                      </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0">2</div>
+                    <div>
+                      <p className="font-medium">Automatische Übertragung</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Die Daten werden sicher an unsere Server gesendet</p>
                     </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0">3</div>
-                      <div>
-                        <p className="font-medium">Speicherung</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Alle Messwerte werden sicher gespeichert</p>
-                      </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0">3</div>
+                    <div>
+                      <p className="font-medium">Speicherung</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Alle Messwerte werden sicher gespeichert</p>
                     </div>
                   </div>
                 </div>
               </div>
-            )
-          }
+            </div>
+          )
+        }
         }
       ]
     },
@@ -742,6 +770,159 @@ async def get_observations(
                     </div>
                   </div>
                 </div>
+              </div>
+            )
+          }
+        }
+      ]
+    }, // <--- Wichtig: Komma nach dem letzten vorherigen Block!
+    {
+      id: 'kosten-nutzen-analyse',
+      title: 'Kosten-Nutzen-Analyse',
+      icon: <Scale className="w-6 h-6" />,
+      intro: {
+        experte: 'Eine strategische Gegenüberstellung der Kosten, Flexibilität und langfristigen Wartung zwischen einer maßgeschneiderten Eigenentwicklung und dem Zukauf von Standardsoftware.',
+        verwaltung: 'Eine strategische Gegenüberstellung der Kosten, Flexibilität und langfristigen Wartung zwischen einer maßgeschneiderten Eigenentwicklung und dem Zukauf von Standardsoftware.',
+        buerger: 'Hier wird abgewogen, ob es besser ist, die Software für dieses Projekt selbst zu entwickeln oder eine fertige Lösung zu kaufen.'
+      },
+      sections: [
+        {
+          id: 'comparison',
+          title: 'Eigenentwicklung vs. Softwarekauf',
+          content: {
+            experte: (
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Option 1: Eigenentwicklung */}
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+                    <h3 className="font-bold text-lg mb-2">Option 1: Eigenentwicklung (Intern)</h3>
+                    <p className="text-sm mb-4">Diese Option nutzt vorhandene Open-Source-Bibliotheken (z.B. Pandas in Python) und interne Personalressourcen. Die Logik für Validierung und Konsolidierung wird spezifisch für die Anforderungen des Projekts programmiert.</p>
+                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen (Interner Satz: 300 €/Tag)</h4>
+                    <table className="w-full text-sm mb-4">
+                      <thead className="text-left">
+                        <tr className="border-b dark:border-gray-600">
+                          <th className="py-1">Phase</th>
+                          <th className="py-1">Aufwand (Tage)</th>
+                          <th className="py-1">Kosten</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b dark:border-gray-700"><td>Konzeption & Architektur</td><td>2 - 4</td><td>600 - 1.200 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Entwicklung & Implementierung</td><td>5 - 10</td><td>1.500 - 3.000 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Test & Validierung</td><td>3 - 5</td><td>900 - 1.500 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Dokumentation & Deployment</td><td>2 - 3</td><td>600 - 900 €</td></tr>
+                        <tr className="font-bold"><td>Gesamt (inkl. 20% Puffer)</td><td>14 - 26</td><td>ca. 4.320 - 7.920 €</td></tr>
+                      </tbody>
+                    </table>
+                    <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Maximale Flexibilität:</b> Regeln können jederzeit angepasst und erweitert werden.</li>
+                      <li><b>Keine Lizenzkosten:</b> Vollständige Kontrolle über den Code und keine Abhängigkeit von Herstellern.</li>
+                      <li><b>Wissensaufbau im Haus:</b> Die Expertise bleibt in der Organisation.</li>
+                      <li><b>Geringere Gesamtkosten:</b> Deutlich günstiger bei Nutzung interner Ressourcen.</li>
+                    </ul>
+                    <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Bindet interne Ressourcen:</b> Mitarbeiter müssen für die Entwicklung abgestellt werden.</li>
+                      <li><b>Volle Verantwortung:</b> Wartung, Fehlerbehebung und Weiterentwicklung liegen intern.</li>
+                    </ul>
+                  </div>
+
+                  {/* Option 2: Softwarekauf */}
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+                    <h3 className="font-bold text-lg mb-2">Option 2: Einkauf kommerzieller Software</h3>
+                    <p className="text-sm mb-4">Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
+                      <li><b>Hersteller-Support:</b> Unterstützung und Wartung durch den Anbieter.</li>
+                      <li><b>Bewährte Lösung:</b> Oft im Markt etabliert und getestet.</li>
+                    </ul>
+                    <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Hohe und wiederkehrende Kosten:</b> Lizenz- und Wartungsgebühren.</li>
+                      <li><b>Geringere Flexibilität:</b> "Vendor-Lock-in", Anpassungen sind oft teuer oder unmöglich.</li>
+                      <li><b>Blackbox-Effekt:</b> Die interne Funktionsweise ist oft nicht transparent.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Empfehlung */}
+                <div className="mt-6 text-center p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
+                    <h3 className="font-bold">Empfehlung</h3>
+                    <p className="mt-2">Für das vorliegende Projekt ist die <b>Eigenentwicklung die klar zu bevorzugende Option</b>. Die Anforderungen sind präzise definiert und können mit Standard-Bibliotheken effizient umgesetzt werden. Die finanziellen Einsparungen sind erheblich, und die geschaffene Lösung ist perfekt auf den Anwendungsfall zugeschnitten, flexibel und zukunftssicher.</p>
+                </div>
+              </div>
+            ),
+            verwaltung: (
+              // Der Inhalt für "verwaltung" ist identisch mit "experte"
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Option 1: Eigenentwicklung */}
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+                    <h3 className="font-bold text-lg mb-2">Option 1: Eigenentwicklung (Intern)</h3>
+                    <p className="text-sm mb-4">Diese Option nutzt vorhandene Open-Source-Bibliotheken (z.B. Pandas in Python) und interne Personalressourcen. Die Logik für Validierung und Konsolidierung wird spezifisch für die Anforderungen des Projekts programmiert.</p>
+                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen (Interner Satz: 300 €/Tag)</h4>
+                    <table className="w-full text-sm mb-4">
+                      <thead className="text-left">
+                        <tr className="border-b dark:border-gray-600">
+                          <th className="py-1">Phase</th>
+                          <th className="py-1">Aufwand (Tage)</th>
+                          <th className="py-1">Kosten</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b dark:border-gray-700"><td>Konzeption & Architektur</td><td>2 - 4</td><td>600 - 1.200 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Entwicklung & Implementierung</td><td>5 - 10</td><td>1.500 - 3.000 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Test & Validierung</td><td>3 - 5</td><td>900 - 1.500 €</td></tr>
+                        <tr className="border-b dark:border-gray-700"><td>Dokumentation & Deployment</td><td>2 - 3</td><td>600 - 900 €</td></tr>
+                        <tr className="font-bold"><td>Gesamt (inkl. 20% Puffer)</td><td>14 - 26</td><td>ca. 4.320 - 7.920 €</td></tr>
+                      </tbody>
+                    </table>
+                    <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Maximale Flexibilität:</b> Regeln können jederzeit angepasst und erweitert werden.</li>
+                      <li><b>Keine Lizenzkosten:</b> Vollständige Kontrolle über den Code und keine Abhängigkeit von Herstellern.</li>
+                      <li><b>Wissensaufbau im Haus:</b> Die Expertise bleibt in der Organisation.</li>
+                      <li><b>Geringere Gesamtkosten:</b> Deutlich günstiger bei Nutzung interner Ressourcen.</li>
+                    </ul>
+                    <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Bindet interne Ressourcen:</b> Mitarbeiter müssen für die Entwicklung abgestellt werden.</li>
+                      <li><b>Volle Verantwortung:</b> Wartung, Fehlerbehebung und Weiterentwicklung liegen intern.</li>
+                    </ul>
+                  </div>
+
+                  {/* Option 2: Softwarekauf */}
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+                    <h3 className="font-bold text-lg mb-2">Option 2: Einkauf kommerzieller Software</h3>
+                    <p className="text-sm mb-4">Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
+                      <li><b>Hersteller-Support:</b> Unterstützung und Wartung durch den Anbieter.</li>
+                      <li><b>Bewährte Lösung:</b> Oft im Markt etabliert und getestet.</li>
+                    </ul>
+                    <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
+                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                      <li><b>Hohe und wiederkehrende Kosten:</b> Lizenz- und Wartungsgebühren.</li>
+                      <li><b>Geringere Flexibilität:</b> "Vendor-Lock-in", Anpassungen sind oft teuer oder unmöglich.</li>
+                      <li><b>Blackbox-Effekt:</b> Die interne Funktionsweise ist oft nicht transparent.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Empfehlung */}
+                <div className="mt-6 text-center p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
+                    <h3 className="font-bold">Empfehlung</h3>
+                    <p className="mt-2">Für das vorliegende Projekt ist die <b>Eigenentwicklung die klar zu bevorzugende Option</b>. Die Anforderungen sind präzise definiert und können mit Standard-Bibliotheken effizient umgesetzt werden. Die finanziellen Einsparungen sind erheblich, und die geschaffene Lösung ist perfekt auf den Anwendungsfall zugeschnitten, flexibel und zukunftssicher.</p>
+                </div>
+              </div>
+            ),
+            buerger: (
+              <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
+                <h3 className="font-bold text-lg mb-2">Selber machen oder kaufen?</h3>
+                <p className="text-sm">Bei der Entwicklung einer solchen Plattform stellt sich immer die Frage: Baut man die Software selbst oder kauft man eine fertige Lösung? Für dieses Projekt wurde entschieden, die Software selbst zu entwickeln. Das ist langfristig günstiger, flexibler und das Wissen darüber, wie alles funktioniert, bleibt hier bei uns im Landkreis.</p>
               </div>
             )
           }
