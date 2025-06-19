@@ -1,5 +1,232 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell } from 'recharts';
+
+// Beispieldaten basierend auf Useriner-See_2025-04-28.csv
+const dailyChartData = [
+  { time: '00:00', pH: 8.61, sauerstoff: 12.2 }, { time: '01:00', pH: 8.62, sauerstoff: 12.3 },
+  { time: '02:00', pH: 8.63, sauerstoff: 12.4 }, { time: '03:00', pH: 8.65, sauerstoff: 12.5 },
+  { time: '04:00', pH: 8.68, sauerstoff: 12.6 }, { time: '05:00', pH: 8.71, sauerstoff: 12.7 },
+  { time: '06:00', pH: 8.74, sauerstoff: 12.8 }, { time: '07:00', pH: 8.77, sauerstoff: 12.9 },
+  { time: '08:00', pH: 8.80, sauerstoff: 13.0 }, { time: '09:00', pH: 8.83, sauerstoff: 13.1 },
+  { time: '10:00', pH: 8.85, sauerstoff: 13.2 }, { time: '11:00', pH: 8.87, sauerstoff: 13.3 },
+  { time: '12:00', pH: 8.88, sauerstoff: 13.4 }, { time: '13:00', pH: 8.89, sauerstoff: 13.5 },
+  { time: '14:00', pH: 8.90, sauerstoff: 13.6 }, { time: '15:00', pH: 8.90, sauerstoff: 13.6 },
+  { time: '16:00', pH: 8.89, sauerstoff: 13.5 }, { time: '17:00', pH: 8.87, sauerstoff: 13.4 },
+  { time: '18:00', pH: 8.85, sauerstoff: 13.3 }, { time: '19:00', pH: 8.82, sauerstoff: 13.2 },
+  { time: '20:00', pH: 8.78, sauerstoff: 13.0 }, { time: '21:00', pH: 8.74, sauerstoff: 12.8 },
+  { time: '22:00', pH: 8.70, sauerstoff: 12.6 }, { time: '23:00', pH: 8.68, sauerstoff: 12.5 },
+];
+
+// Eigene Komponente für die Grafik
+const TagesgangChart = () => (
+  <div className="w-full h-80 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+    <ResponsiveContainer>
+      <LineChart data={dailyChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+        <XAxis dataKey="time" tick={{ fill: 'currentColor', fontSize: 12 }} />
+        <YAxis yAxisId="left" dataKey="pH" domain={[8.6, 8.9]} tick={{ fill: '#3b82f6', fontSize: 12 }} />
+        <YAxis yAxisId="right" dataKey="sauerstoff" orientation="right" domain={[12.0, 13.6]} tick={{ fill: '#14b8a6', fontSize: 12 }} />
+        <Tooltip
+          contentStyle={{ 
+            backgroundColor: 'rgba(31, 41, 55, 0.8)', 
+            borderColor: '#4b5563',
+            color: '#ffffff',
+            borderRadius: '0.5rem'
+          }}
+          itemStyle={{ color: '#ffffff' }}
+          labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
+        />
+        <Legend />
+        <Line yAxisId="left" type="monotone" dataKey="pH" stroke="#3b82f6" strokeWidth={2} name="pH-Wert" />
+        <Line yAxisId="right" type="monotone" dataKey="sauerstoff" stroke="#14b8a6" strokeWidth={2} name="Gelöster Sauerstoff (mg/L)" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+);
+
+
+// Eigene Komponente für die Validierungs-Grafik
+// Daten für die Validierungs-Grafik (pH-Werte mit einem Ausreißer)
+const validationChartData = [
+  { time: '06:00', pH: 8.74, type: 'valid' }, { time: '07:00', pH: 8.77, type: 'valid' },
+  { time: '08:00', pH: 8.80, type: 'valid' }, { time: '09:00', pH: 8.83, type: 'valid' },
+  { time: '10:00', pH: 9.50, type: 'outlier' }, // <-- Künstlicher Ausreißer
+  { time: '11:00', pH: 8.87, type: 'valid' }, { time: '12:00', pH: 8.88, type: 'valid' },
+  { time: '13:00', pH: 8.89, type: 'valid' }, { time: '14:00', pH: 8.90, type: 'valid' },
+];
+
+// Helfer-Komponente, die für jeden Punkt die Form und Farbe bestimmt
+const CustomShape = (props) => {
+  const { cx, cy, payload } = props;
+  if (payload.type === 'outlier') {
+    // Zeichne ein rotes Kreuz für Ausreißer
+    return (
+      <path d={`M${cx - 5},${cy - 5}L${cx + 5},${cy + 5}M${cx + 5},${cy - 5}L${cx - 5},${cy + 5}`} stroke="#ef4444" strokeWidth="2" />
+    );
+  }
+  // Zeichne einen grünen Kreis für valide Punkte
+  return <circle cx={cx} cy={cy} r={5} fill="#10b981" />;
+};
+
+// Die finale, korrigierte Chart-Komponente
+const ValidationChart = () => (
+  <div className="w-full h-80 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg relative">
+    <ResponsiveContainer>
+      <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2}/>
+        <XAxis dataKey="time" type="category" name="Uhrzeit" tick={{ fill: 'currentColor', fontSize: 12 }} />
+        <YAxis dataKey="pH" name="pH-Wert" domain={[8.6, 9.6]} tick={{ fill: 'currentColor', fontSize: 12 }} />
+        <Tooltip 
+          cursor={{ strokeDasharray: '3 3' }} 
+          contentStyle={{ 
+            backgroundColor: 'rgba(31, 41, 55, 0.8)', 
+            borderColor: '#4b5563',
+            borderRadius: '0.5rem'
+          }}
+        />
+        <Scatter data={validationChartData} shape={<CustomShape />} />
+      </ScatterChart>
+    </ResponsiveContainer>
+    {/* Eigene Legende, da die automatische nicht mehr funktioniert */}
+    <div className="absolute top-2 right-4 text-xs flex space-x-4">
+        <div className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+            <span>Valide Daten</span>
+        </div>
+        <div className="flex items-center">
+            <svg className="w-3 h-3 mr-2" viewBox="0 0 10 10"><path d="M0,0L10,10M10,0L0,10" stroke="#ef4444" strokeWidth="1.5"></path></svg>
+            <span>Ausreißer</span>
+        </div>
+    </div>
+  </div>
+);
+
+// FINALE, KORRIGIERTE CHART-KOMPONENTE
+const ConsolidationTempChart = () => {
+  const rawCsvData = `Datum;Uhrzeit;Wassertemperatur (°C);ph-Wert;Sauerstoff (mg/L)
+28.04.2025;00:00:00;8.8;8.61;12.2
+28.04.2025;01:00:00;8.6;8.62;12.3
+28.04.2025;02:00:00;8.4;8.63;12.4
+28.04.2025;03:00:00;8.3;8.65;12.5
+28.04.2025;04:00:00;8.2;8.68;12.6
+28.04.2025;05:00:00;8.4;8.71;12.7
+28.04.2025;06:00:00;8.7;8.74;12.8
+28.04.2025;07:00:00;9.1;8.77;12.9
+28.04.2025;08:00:00;9.8;8.80;13.0
+28.04.2025;09:00:00;10.5;8.83;13.1
+28.04.2025;10:00:00;11.1;8.85;13.2
+28.04.2025;11:00:00;11.6;8.87;13.3
+28.04.2025;12:00:00;11.9;8.88;13.4
+28.04.2025;13:00:00;12.1;8.89;13.5
+28.04.2025;14:00:00;12.0;8.90;13.6
+28.04.2025;15:00:00;11.8;8.90;13.6
+28.04.2025;16:00:00;11.5;8.89;13.5
+28.04.2025;17:00:00;11.0;8.87;13.4
+28.04.2025;18:00:00;10.5;8.85;13.3
+28.04.2025;19:00:00;10.1;8.82;13.2
+28.04.2025;20:00:00;9.8;8.78;13.0
+28.04.2025;21:00:00;9.5;8.74;12.8
+28.04.2025;22:00:00;9.2;8.70;12.6
+28.04.2025;23:00:00;9.0;8.68;12.5`;
+
+  const lines = rawCsvData.trim().split('\n').slice(1).filter(line => line.trim() !== '');
+  const validData = lines.map(line => {
+    const parts = line.split(';');
+    if (parts.length < 3) return null;
+    return {
+      time: (parts[1] || "").substring(0, 5),
+      temp: parseFloat((parts[2] || "").replace(',', '.'))
+    };
+  }).filter(d => d && !isNaN(d.temp) && d.temp > -100);
+
+  if (validData.length === 0) {
+    return <div className="text-center p-4">Keine validen Daten zum Anzeigen vorhanden.</div>;
+  }
+
+  const tempValues = validData.map(p => p.temp);
+  const meanTemp = tempValues.reduce((a, b) => a + b, 0) / tempValues.length;
+  const minTemp = Math.min(...tempValues);
+  const maxTemp = Math.max(...tempValues);
+  const stdDev = Math.sqrt(tempValues.map(x => Math.pow(x - meanTemp, 2)).reduce((a, b) => a + b) / tempValues.length);
+  
+  const chartData = validData.map(d => ({
+    ...d,
+    stdDevRange: [meanTemp - stdDev, meanTemp + stdDev]
+  }));
+
+  return (
+    <div className="w-full h-80 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+      <ResponsiveContainer>
+        <ComposedChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+          <XAxis dataKey="time" tick={{ fill: 'currentColor', fontSize: 12 }} />
+          <YAxis domain={['dataMin - 1', 'dataMax + 1']} tick={{ fill: 'currentColor', fontSize: 12 }} />
+          <Tooltip 
+             contentStyle={{ 
+              backgroundColor: 'rgba(31, 41, 55, 0.8)', 
+              borderColor: '#4b5563',
+              borderRadius: '0.5rem'
+            }}
+          />
+          <Legend verticalAlign="top" height={36}/>
+          
+          {/* HIER FINDET DIE RUNDUNG STATT */}
+          <ReferenceLine y={maxTemp} label={{ value: `Max: ${maxTemp.toFixed(1)}°C`, position: 'insideTopRight', fill: '#ef4444' }} stroke="#ef4444" strokeDasharray="3 3" />
+          <ReferenceLine y={meanTemp} label={{ value: `Mittel: ${meanTemp.toFixed(1)}°C`, position: 'insideTopRight', fill: '#a3a3a3' }} stroke="#a3a3a3" strokeDasharray="3 3" />
+          <ReferenceLine y={minTemp} label={{ value: `Min: ${minTemp.toFixed(1)}°C`, position: 'insideTopRight', fill: '#3b82f6' }} stroke="#3b82f6" strokeDasharray="3 3" />
+          
+          <Area type="monotone" dataKey="stdDevRange" stroke="none" fill="#14b8a6" fillOpacity={0.2} name="Standardabweichung" />
+          <Line type="monotone" dataKey="temp" stroke="#14b8a6" strokeWidth={2} name="Temperatur (°C)" dot={false} />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+// Daten für die Qualitäts-Flag-Grafik
+const qualityFlagData = [
+  { name: 'Gut (1 Pass)', value: 93, color: '#10b981' },
+  { name: 'Verdächtig (3 Suspect)', value: 4, color: '#f59e0b' },
+  { name: 'Fehlerhaft (4 Fail)', value: 1, color: '#ef4444' },
+  //{ name: 'Nicht validiert (2 Not Evaluated)', value: 2, color: 'rgb(107 114 128' },
+];
+
+// Eigene Komponente für die Qualitäts-Flag-Grafik
+// Eigene Komponente für die Qualitäts-Flag-Grafik als Doughnut-Chart
+const QualityFlagChart = () => (
+  <div className="w-full h-80 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+    <ResponsiveContainer>
+      <PieChart>
+        <Pie
+          data={qualityFlagData}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          innerRadius={70} // <-- DIESE ZEILE IST NEU und erzeugt den Doughnut-Effekt
+          outerRadius={110}
+          fill="#8884d8"
+          paddingAngle={5} // Ein kleiner Abstand zwischen den Segmenten
+          dataKey="value"
+          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+        >
+          {qualityFlagData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Pie>
+        <Tooltip
+          formatter={(value) => `${value}%`}
+          contentStyle={{ 
+            backgroundColor: 'rgba(31, 41, 55, 0.8)', 
+            borderColor: '#4b5563',
+            borderRadius: '0.5rem'
+          }}
+        />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  </div>
+);
 
 function App() {
   const [expandedSections, setExpandedSections] = useState({});
@@ -8,7 +235,7 @@ function App() {
   const [comments, setComments] = useState({});
   const [newComment, setNewComment] = useState({});
   const [showComments, setShowComments] = useState({});
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -110,6 +337,22 @@ function App() {
 
               {/* Alter Inhaltsblock */}
               <div className="space-y-4">
+
+                      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
+                        <h5 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Architektur der Datenaufnahme</h5>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 space-y-3">
+                          <p>
+                              Die Umstellung auf eine hochfrequente, automatisierte Erfassung von Wasserqualitätsdaten stellt einen Paradigmenwechsel gegenüber der traditionellen, niederfrequenten Beprobung dar. Sie ermöglicht ein tiefgreifendes, mechanistisches Verständnis der komplexen Prozesse in aquatischen Ökosystemen. Um diesen kontinuierlichen Datenstrom effizient und zuverlässig zu verarbeiten, wird eine skalierbare Event-Streaming-Architektur eingesetzt.
+                          </p>
+                          <p>
+                              Das technologische Herzstück dieser Architektur ist <strong>Apache Kafka</strong>, eine Plattform für Echtzeit-Daten-Streaming. In diesem System agieren die Sensoren als "Producer", die ihre Messwerte kontinuierlich in einen dedizierten Datenstrom ("Topic") senden. Kafka fungiert als robuster und hochverfügbarer Puffer, der diese Datenströme entgegennimmt und für nachgelagerte Prozesse bereitstellt. Dieses Producer-Consumer-Muster entkoppelt die Datenerfassung von der Datenverarbeitung, was die Systemstabilität erhöht und Datenverlust verhindert, selbst wenn verarbeitende Komponenten temporär ausfallen.
+                          </p>
+                          <p>
+                              Unmittelbar nach der Aufnahme in den Datenstrom durchläuft jeder Messwert eine erste, automatisierte Qualitätskontrolle (Aufnahme-QC). Diese erste Validierungsstufe umfasst grundlegende Prüfungen wie die Validierung des Datenformats, die Verifikation von Zeitstempeln und erste Bereichsprüfungen gegen physikalisch definierte Grenzen. Dieser Schritt dient als erste Verteidigungslinie, um technisch defekte oder völlig unplausible Datenpakete frühzeitig zu identifizieren und für die weitere Analyse zu kennzeichnen.
+                          </p>
+                        </div>
+                      </div>
+
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">Technische Komponenten</h5>
                   <pre className="text-sm overflow-x-auto">
@@ -156,6 +399,7 @@ function App() {
                     </div>
                   </div>
                 </div>
+                
               </div>
             </>
           ),
@@ -163,7 +407,7 @@ function App() {
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Systemübersicht</h5>
-                <ul className="list-disc list-inside space-y-2">
+                <ul className="list-disc list-outside pl-5 space-y-2">
                   <li>Automatische Datenerfassung alle 60 Minuten</li>
                   <li>Sichere Übertragung über verschlüsselte Verbindungen</li>
                   <li>Zwischenspeicherung bei Verbindungsproblemen</li>
@@ -172,7 +416,7 @@ function App() {
               </div>
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Vorteile für die Verwaltung</h5>
-                <ul className="list-disc list-inside space-y-2">
+                <ul className="list-disc list-outside pl-5 space-y-2">
                   <li>Keine manuelle Dateneingabe erforderlich</li>
                   <li>Echtzeit-Überwachung möglich</li>
                   <li>Automatische Fehlererkennung</li>
@@ -279,6 +523,34 @@ function App() {
                 
                 {/* Aufklappbarer Python-Code */}
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
+
+                  {/* HIER DEN NEUEN ERKLÄR-BLOCK EINFÜGEN */}
+                  <div className="mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
+                    <h5 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Bibliotheken und Methodik der Validierung</h5>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 space-y-3">
+                      <p>
+                        Rohe Sensordaten sind anfällig für eine Reihe von Fehlern, darunter Messspitzen (Spikes), Sensor-Drift oder Ausfälle durch Biofouling. Um eine hohe Datenqualität sicherzustellen, wird ein mehrstufiger, hierarchischer Validierungsprozess angewendet. Dieser Ansatz ist eine etablierte Best Practice internationaler Umweltbehörden und kombiniert einfache, regelbasierte Prüfungen mit komplexen statistischen Verfahren.
+                      </p>
+                      <p>
+                        Das technische Fundament dieses Prozesses bildet ein spezialisiertes Ökosystem von Python-Bibliotheken:
+                      </p>
+                      <ul className="list-disc list-outside pl-5 text space-y-2 pl-2">
+                        <li>
+                          <strong>Pandas:</strong> Dient als Grundlage für jegliche Datenmanipulation. Sämtliche Zeitreihendaten werden in Pandas DataFrames geladen, was eine effiziente Filterung, Transformation und Analyse ermöglicht.
+                        </li>
+                        <li>
+                          <strong>Great Expectations:</strong> Diese Bibliothek wird für die deklarative Datenvalidierung eingesetzt. Sie erlaubt die Definition von "Data Contracts" oder Erwartungen, die die Daten erfüllen müssen (z.B. "Werte müssen zwischen 0 und 14 liegen", "Spalte darf keine Null-Werte enthalten"). Dies ist ideal für die systematische Umsetzung der ersten Validierungsstufen.
+                        </li>
+                        <li>
+                          <strong>PyOD (Python Outlier Detection):</strong> Für die fortgeschrittene statistische Validierung kommt PyOD zum Einsatz. Diese Bibliothek stellt eine umfassende Sammlung von Algorithmen zur Ausreißererkennung bereit, darunter der im Code-Beispiel gezeigte <strong>Isolation Forest</strong>. Solche Modelle können komplexe, nicht-lineare Anomalien erkennen, die einfache Bereichsprüfungen übersehen würden.
+                        </li>
+                      </ul>
+                      <p>
+                        Das Ergebnis dieses Prozesses ist kein binäres "gut" oder "schlecht". Stattdessen wird jeder einzelne Datenpunkt mit einem Qualitäts-Flag versehen (z.B. nach dem QARTOD-Standard), das die Ergebnisse der durchlaufenen Tests widerspiegelt. Diese feingranulare Kennzeichnung ist entscheidend für die nachfolgende, korrekte wissenschaftliche Auswertung und Konsolidierung der Daten.
+                      </p>
+                    </div>
+                  </div>
+
                   <details>
                     <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
                       <span>Python Implementierungsbeispiel</span>
@@ -420,18 +692,46 @@ function App() {
                   <p className="text-sm mb-3">
                     Die Zusammenfassung von Stunden- zu Tageswerten erfolgt nicht pauschal, sondern nach parameterspezifischen, wissenschaftlich fundierten Regeln, um die Aussagekraft der Kennwerte zu maximieren.
                   </p>
-                  <ul className="list-disc list-inside space-y-2 text-sm">
+                  <ul className="list-disc list-outside pl-5 space-y-2 text-sm">
                       <li><strong>Temperatur:</strong> Hier sind Mittel-, Minimal- und Maximalwerte relevant, um die Tagesschwankung (Diurnale Amplitude) zu erfassen.</li>
                       <li><strong>pH-Wert:</strong> Als logarithmische Größe wird für den pH-Wert primär der <strong>Median</strong> als robuster Mittelwert verwendet, da er weniger anfällig für Extremwerte ist.</li>
                       <li><strong>Gelöster Sauerstoff:</strong> Der <strong>Minimalwert</strong> ist oft der kritischste Indikator für aquatischen Stress, weshalb er gesondert ausgewiesen wird.</li>
                   </ul>
                 </div>
+
+                {/* HIER DEN NEUEN ERKLÄR-BLOCK EINFÜGEN */}
+                <div className="mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
+                  <h5 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Methodik der wissenschaftlichen Datenkonsolidierung</h5>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 space-y-3">
+                    <p>
+                      Die Aggregation von hochfrequenten stündlichen Daten zu aussagekräftigen Tageswerten ist ein kritischer Schritt, der über eine simple arithmetische Mittelung hinausgehen muss. Ein einfacher Tagesmittelwert kann kurzzeitige, aber ökologisch entscheidende Ereignisse (wie nächtliche Sauerstoffminimum-Werte oder kurzzeitige pH-Spitzen) maskieren und zu Fehlinterpretationen des Gewässerzustands führen.
+                    </p>
+                    <p>
+                      Der hier verfolgte Ansatz ist daher eine <strong>parameter-spezifische Konsolidierung</strong>. Die Auswahl der statistischen Kennzahlen richtet sich nach der ökologischen Relevanz und der statistischen Verteilung des jeweiligen Parameters:
+                    </p>
+                    <ul className="list-disc list-outside pl-5 space-y-2 pl-2">
+                      <li>
+                        <strong>Temperatur:</strong> Hier werden <strong>Mittelwert, Minimum und Maximum</strong> berechnet, um die volle thermische Dynamik und potenzielle Stressereignisse für aquatische Lebewesen zu erfassen.
+                      </li>
+                      <li>
+                        <strong>pH-Wert:</strong> Aufgrund der logarithmischen Skala des pH-Wertes ist der <strong>Median</strong> ein robusterer Indikator für die zentrale Tendenz als der arithmetische Mittelwert.
+                      </li>
+                      <li>
+                        <strong>Gelöster Sauerstoff:</strong> Das tägliche <strong>Minimum</strong> ist hier die kritischste Kennzahl, da es direkt auf hypoxische Bedingungen hinweist, die zu Fischsterben führen können.
+                      </li>
+                    </ul>
+                    <p>
+                      Ein fundamentaler Grundsatz zur Gewährleistung der Repräsentativität ist zudem der Umgang mit fehlenden Daten. Ein Tagesaggregat wird nur dann als gültig erachtet, wenn eine Mindestdatenverfügbarkeit von <strong>75% der Stundenwerte</strong> des Tages gegeben ist. Dies stellt sicher, dass die berechneten Kennzahlen den Tagesverlauf adäquat widerspiegeln.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">Regeln zur Datenverfügbarkeit</h5>
                   <p className="text-sm mb-3">
                     Um die Repräsentativität der Tageswerte sicherzustellen, werden international etablierte Regeln angewendet:
                   </p>
-                  <ul className="list-disc list-inside space-y-2 text-sm">
+                  <ul className="list-disc list-outside pl-5 space-y-2 text-sm">
                       <li>Ein Tageswert wird nur berechnet, wenn mindestens <strong>75% der Stundenwerte</strong> (18 von 24) innerhalb des Tages als valide eingestuft wurden.</li>
                       <li>Kleinere Datenlücken von weniger als 3 Stunden können durch lineare Interpolation gefüllt werden, werden aber entsprechend gekennzeichnet.</li>
                   </ul>
@@ -515,7 +815,7 @@ function App() {
                 </div>
                 <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">Wichtige Hinweise</h5>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
+                  <ul className="list-disc list-outside pl-5 space-y-1 text-sm">
                     <li>Tageswerte nur bei ausreichender Datenverfügbarkeit</li>
                     <li>Extremwerte werden gesondert dokumentiert</li>
                     <li>Unsichere Werte fließen nicht in Berechnung ein</li>
@@ -565,6 +865,28 @@ function App() {
           content: {
             experte: (
               <div className="space-y-4">
+
+                  {/* HIER DEN NEUEN ERKLÄR-BLOCK EINFÜGEN */}
+                  <div className="mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
+                    <h5 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Methodik der Qualitätskennzeichnung</h5>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 space-y-3">
+                      <p>
+                        Ein fundamentaler Grundsatz der wissenschaftlichen Datenverarbeitung ist, fehlerhafte Daten niemals zu löschen. Stattdessen wird jeder einzelne Messwert mit einer Qualitätskennzeichnung, einem sogenannten "Flag", versehen.  Dieser Ansatz gewährleistet die Transparenz und Reproduzierbarkeit der gesamten Prozesskette und ermöglicht es nachgelagerten Nutzern, fundierte Entscheidungen über die Verwendung der Daten zu treffen.
+                      </p>
+                      <p>
+                        Um eine hohe Interoperabilität zu gewährleisten, orientiert sich unser System am <strong>QARTOD-Standard</strong> (Quality Assurance of Real-Time Oceanographic Data), der von US-Behörden wie der NOAA entwickelt wurde.  QARTOD ist mehr als nur eine Liste von Flags; es ist ein ganzes Framework, das eine Reihe von standardisierten Tests für Echtzeitdaten definiert.
+                      </p>
+                      <p>
+                        Die zugewiesenen Flags steuern direkt die weitere Verarbeitung in unserer Pipeline:
+                      </p>
+                      <ul className="list-disc list-outside pl-5 space-y-1">
+                        <li><strong>Flag 1 (Pass):</strong> Nur Daten, die alle automatisierten Tests bestanden haben, werden für die Berechnung offizieller Tageskennzahlen und für Grenzwertvergleiche herangezogen. </li>
+                        <li><strong>Flag 3 (Suspect):</strong> Als "verdächtig" eingestufte Daten werden von den finalen Berechnungen ausgeschlossen, aber für die Expertenansicht visualisiert. Sie können auf interessante, aber ungesicherte Ereignisse hindeuten und sind der primäre Input für die manuelle Expertenprüfung (Level-2-Validierung). </li>
+                        <li><strong>Flag 4 (Fail):</strong> Daten, die als fehlerhaft erkannt wurden, werden für keine weiteren Berechnungen verwendet. Sie verbleiben jedoch mit dieser Kennzeichnung im Rohdatensatz, um eine lückenlose Dokumentation von Sensorproblemen zu gewährleisten. </li>
+                      </ul>
+                    </div>
+                  </div>
+
                   <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
                       <h5 className="font-semibold mb-2">Qualitäts-Flags nach QARTOD-Standard</h5>
                       <p className="text-sm mb-3">
@@ -676,6 +998,21 @@ function App() {
           content: {
             experte: (
               <div className="space-y-4">
+                {/* HIER DEN NEUEN ERKLÄR-BLOCK EINFÜGEN */}
+                <div className="mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
+                  <h5 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Technik und Standards der Datenbereitstellung</h5>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 space-y-3">
+                    <p>
+                      Die Bereitstellung der qualitätsgesicherten Daten folgt den <strong>FAIR-Prinzipien</strong> (Findable, Accessible, Interoperable, Reusable). Ziel ist es, die Daten nicht nur als Download anzubieten, sondern über eine standardisierte, maschinenlesbare Schnittstelle (API) zugänglich zu machen, um eine maximale Interoperabilität und Nachnutzbarkeit durch Dritte zu gewährleisten.
+                    </p>
+                    <p>
+                      Als Kerntechnologie wird die <strong>OGC SensorThings API</strong> eingesetzt.  Dieser vom Open Geospatial Consortium (OGC) standardisierte, REST-basierte Ansatz ist speziell für das Internet der Dinge (IoT) und Sensordaten konzipiert. Er definiert ein einheitliches Datenmodell mit Entitäten wie `Thing` (Messstation), `Datastream` (Zeitreihe eines Parameters) und `Observation` (Einzelmessung).  Die Verwendung dieses Standards stellt sicher, dass externe Forscher oder Behörden die Daten ohne projektspezifischen Code direkt in ihre eigenen Systeme und Analysen integrieren können.
+                    </p>
+                    <p>
+                      Die technische Umsetzung der API erfolgt mit <strong>FastAPI</strong>, einem modernen Python-Framework, das sich durch hohe Performance und automatische Erstellung von interaktiven Dokumentationen (via OpenAPI) auszeichnet.  Neben dem primären JSON-Format der SensorThings API wird zudem die Bereitstellung im <strong>WaterML 2.0</strong>-Format unterstützt, einem weiteren wichtigen OGC-Standard für hydrologische Zeitreihendaten.  Die Architektur ist somit auf die Einhaltung der europäischen <strong>INSPIRE-Richtlinien</strong> für Geodaten ausgerichtet. 
+                    </p>
+                  </div>
+                </div>
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">API Endpoints</h5>
                   <pre className="text-sm overflow-x-auto">
@@ -712,7 +1049,7 @@ async def get_observations(
                 </div>
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">Unterstützte Standards</h5>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
+                  <ul className="list-disc list-outside pl-5 space-y-1 text-sm">
                     <li>OGC SensorThings API 1.1</li>
                     <li>WaterML 2.0 für Zeitreihen</li>
                     <li>JSON-LD mit schema.org Vokabular</li>
@@ -795,7 +1132,7 @@ async def get_observations(
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Option 1: Eigenentwicklung */}
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-                    <h3 className="font-bold text-lg mb-2">123 ---Option 1: Eigenentwicklung (Intern)</h3>
+                    <h3 className="font-bold text-lg mb-2">Option 1: Eigenentwicklung (Intern)</h3>
                     <p className="text-sm mb-4">Diese Option nutzt vorhandene Open-Source-Bibliotheken (z.B. Pandas in Python) und interne Personalressourcen. Die Logik für Validierung und Konsolidierung wird spezifisch für die Anforderungen des Projekts programmiert.</p>
                     <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen<br/>(Interner Satz: 300 €/Tag)</h4>
                     <table className="w-full text-sm mb-4">
@@ -815,14 +1152,14 @@ async def get_observations(
                       </tbody>
                     </table>
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Maximale Flexibilität:</b> Regeln können jederzeit angepasst und erweitert werden.</li>
                       <li><b>Keine Lizenzkosten:</b> Vollständige Kontrolle über den Code und keine Abhängigkeit von Herstellern.</li>
                       <li><b>Wissensaufbau im Haus:</b> Die Expertise bleibt in der Organisation.</li>
                       <li><b>Geringere Gesamtkosten:</b> Deutlich günstiger bei Nutzung interner Ressourcen.</li>
                     </ul>
                     <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Bindet interne Ressourcen:</b> Mitarbeiter müssen für die Entwicklung abgestellt werden.</li>
                       <li><b>Volle Verantwortung:</b> Wartung, Fehlerbehebung und Weiterentwicklung liegen intern.</li>
                     </ul>
@@ -831,7 +1168,8 @@ async def get_observations(
                   {/* Option 2: Softwarekauf */}
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
                     <h3 className="font-bold text-lg mb-2">Option 2: Einkauf kommerzieller Software</h3>
-                    <p className="text-sm mb-4">--123-- Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <p className="text-sm mb-4">Hier wird eine bestehende Softwarelösung für Datenqualitätsmanagement eingekauft. Diese bieten oft grafische Oberflächen, kommen aber mit wiederkehrenden Kosten und weniger Flexibilität.</p>
+                    <h4 className="font-semibold mb-2">Geschätzter Kostenrahmen</h4>
                     <table className="w-full text-sm mb-4">
                       <thead className="text-left">
                         <tr className="border-b dark:border-gray-600">
@@ -847,13 +1185,13 @@ async def get_observations(
                     </table>
                     
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
                       <li><b>Hersteller-Support:</b> Unterstützung und Wartung durch den Anbieter.</li>
                       <li><b>Bewährte Lösung:</b> Oft im Markt etabliert und getestet.</li>
                     </ul>
                     <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc llist-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Hohe und wiederkehrende Kosten:</b> Lizenz- und Wartungsgebühren.</li>
                       <li><b>Geringere Flexibilität:</b> "Vendor-Lock-in", Anpassungen sind oft teuer oder unmöglich.</li>
                       <li><b>Blackbox-Effekt:</b> Die interne Funktionsweise ist oft nicht transparent.</li>
@@ -894,14 +1232,14 @@ async def get_observations(
                       </tbody>
                     </table>
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Maximale Flexibilität:</b> Regeln können jederzeit angepasst und erweitert werden.</li>
                       <li><b>Keine Lizenzkosten:</b> Vollständige Kontrolle über den Code und keine Abhängigkeit von Herstellern.</li>
                       <li><b>Wissensaufbau im Haus:</b> Die Expertise bleibt in der Organisation.</li>
                       <li><b>Geringere Gesamtkosten:</b> Deutlich günstiger bei Nutzung interner Ressourcen.</li>
                     </ul>
                     <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Bindet interne Ressourcen:</b> Mitarbeiter müssen für die Entwicklung abgestellt werden.</li>
                       <li><b>Volle Verantwortung:</b> Wartung, Fehlerbehebung und Weiterentwicklung liegen intern.</li>
                     </ul>
@@ -926,13 +1264,13 @@ async def get_observations(
                       </tbody>
                     </table>
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
                       <li><b>Hersteller-Support:</b> Unterstützung und Wartung durch den Anbieter.</li>
                       <li><b>Bewährte Lösung:</b> Oft im Markt etabliert und getestet.</li>
                     </ul>
                     <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
-                    <ul className="list-disc list-inside text-sm space-y-1 mt-1">
+                    <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
                       <li><b>Hohe und wiederkehrende Kosten:</b> Lizenz- und Wartungsgebühren.</li>
                       <li><b>Geringere Flexibilität:</b> "Vendor-Lock-in", Anpassungen sind oft teuer oder unmöglich.</li>
                       <li><b>Blackbox-Effekt:</b> Die interne Funktionsweise ist oft nicht transparent.</li>
@@ -1088,8 +1426,8 @@ async def get_observations(
               <div className="flex items-center space-x-2">
                 <Droplets className="w-8 h-8 text-blue-500" />
                 <div>
-                  <h1 className="text-xl font-bold">Wasserqualität Vorpommern-Greifswald</h1>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Automatische Validierung & Open Data</p>
+                  <h1 className="text-xl font-bold">Digitale Gewässergüte-Messstationen  | LK Vorpommern-Greifswald</h1>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Von Rohdaten zu wertvoller Information -{'>'} Automatische Validierung & Open Data</p>
                 </div>
               </div>
             </div>
@@ -1215,6 +1553,37 @@ async def get_observations(
                 </p>
               </div>
             </div>
+
+            {/* HIER DIE GRAFIK AN NEUER STELLE EINFÜGEN */}
+            {filteredSteps[activeStep]?.id === 'dateneingabe' && (
+              <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Beispiel-Tagesgang (Useriner See, 28.04.2025)</h5>
+                <TagesgangChart />
+              </div>
+            )}
+
+            {/* NEUE GRAFIK FÜR VALIDIERUNG HINZUFÜGEN */}
+            {filteredSteps[activeStep]?.id === 'validierung' && (
+              <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Beispiel: Spike-Erkennung im pH-Verlauf</h5>
+                <ValidationChart />
+              </div>
+            )}
+
+            {filteredSteps[activeStep]?.id === 'aggregation' && (
+              <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Beispiel: Tageskonsolidierung der Temperatur</h5>
+                <ConsolidationTempChart />
+              </div>
+            )}
+
+            {/* NEUE GRAFIK FÜR QUALITÄTS-FLAGS HINZUFÜGEN */}
+            {filteredSteps[activeStep]?.id === 'quality-flags' && (
+              <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Beispiel: Verteilung der Qualitäts-Flags</h5>
+                <QualityFlagChart />
+              </div>
+            )}
 
             {/* Sections */}
             <div className="space-y-4">
