@@ -203,59 +203,93 @@ services:
           content: {
             experte: (
               <div className="space-y-4">
+                {/* Wissenschaftliche Erklärung */}
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-                  <h5 className="font-semibold mb-3">Python Implementierung</h5>
-                  <pre className="text-sm overflow-x-auto">
-{`import pandas as pd
-import numpy as np
-from scipy import stats
-from pyod.models.iforest import IForest
-
-class WaterQualityValidator:
-    def __init__(self):
-        self.anomaly_detector = IForest(contamination=0.05)
-        
-    def validate_range(self, param, value, limits):
-        """Stufe 2: Bereichsvalidierung"""
-        if limits['min'] <= value <= limits['max']:
-            return 'PASS', 1
-        elif value < limits['critical_min'] or value > limits['critical_max']:
-            return 'FAIL', 4
-        else:
-            return 'SUSPECT', 3
-            
-    def validate_rate_of_change(self, series, max_change):
-        """Stufe 3: Änderungsratenprüfung"""
-        changes = series.diff()
-        spikes = changes[abs(changes) > max_change]
-        return len(spikes) == 0
-        
-    def detect_anomalies(self, data):
-        """Stufe 4: ML-basierte Anomalieerkennung"""
-        self.anomaly_detector.fit(data)
-        predictions = self.anomaly_detector.predict(data)
-        return predictions  # 0 = normal, 1 = anomaly`}
-                  </pre>
+                  <h5 className="font-semibold mb-2">Hierarchischer Validierungsansatz</h5>
+                  <p className="text-sm mb-3">
+                    Unser System folgt einem mehrstufigen, hierarchischen Validierungsansatz, wie er von führenden Umweltbehörden (z.B. US-EPA) entwickelt und in der wissenschaftlichen Literatur empfohlen wird. Dieser Ansatz kombiniert automatisierte Tests mit Expertenwissen, um eine hohe Datenqualität zu gewährleisten.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0 font-bold">1</div>
+                      <div>
+                        <p className="font-medium">Screening & Bereichsprüfungen</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Jeder eingehende Messwert wird in Echtzeit auf die Einhaltung physikalischer und betrieblicher Grenzwerte sowie auf plausible Änderungsraten geprüft. Dies dient als erste Verteidigungslinie gegen grobe Sensorfehler.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white flex-shrink-0 font-bold">2</div>
+                      <div>
+                        <p className="font-medium">Statistische Anomalieerkennung</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Mithilfe von Machine-Learning-Verfahren, wie dem Isolation Forest Algorithmus aus der Bibliothek <strong>PyOD</strong>, werden subtile Ausreißer und Anomalien im Datenstrom erkannt, die einfache Bereichsprüfungen nicht finden würden. Solche Verfahren können eine Genauigkeit von über 98% erreichen.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white flex-shrink-0 font-bold">3</div>
+                      <div>
+                        <p className="font-medium">Prozessbasierte Plausibilisierung</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Es werden Zusammenhänge zwischen verschiedenen Parametern geprüft. Beispielsweise wird die Sauerstoffsättigung in Relation zur Wassertemperatur gesetzt, um biologisch oder physikalisch unplausible Kombinationen zu identifizieren.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white flex-shrink-0 font-bold">4</div>
+                      <div>
+                        <p className="font-medium">Expertenprüfung</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Alle als "verdächtig" markierten Datenpunkte werden zur manuellen Überprüfung durch Fachexperten in dieser Anwendung visualisiert und können hier kommentiert und final bewertet werden.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                    <h5 className="font-semibold mb-2">Validierungsparameter pH</h5>
-                    <ul className="text-sm space-y-1">
-                      <li>Physikalischer Bereich: 0-14</li>
-                      <li>Betriebsbereich: 6.5-8.5</li>
-                      <li>Änderungsrate: <0.5/h</li>
-                      <li>Spike-Erkennung: >1.0 Abweichung</li>
-                    </ul>
-                  </div>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <h5 className="font-semibold mb-2">Validierungsparameter O₂</h5>
-                    <ul className="text-sm space-y-1">
-                      <li>Sättigungsbereich: 0-150%</li>
-                      <li>Kritisch niedrig: <2 mg/L</li>
-                      <li>Temperaturkorrektur: aktiv</li>
-                      <li>Tagesgang: berücksichtigt</li>
-                    </ul>
-                  </div>
+                
+                {/* Aufklappbarer Python-Code */}
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  <details>
+                    <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
+                      <span>Python Implementierungsbeispiel</span>
+                      <ChevronDown className="w-5 h-5 transition-transform" />
+                    </summary>
+                    <div className="px-4 pb-4 border-t dark:border-gray-700">
+                      <pre className="text-sm overflow-x-auto mt-4">
+            {`import pandas as pd
+            import numpy as np
+            from scipy import stats
+            from pyod.models.iforest import IForest
+
+            class WaterQualityValidator:
+                def __init__(self):
+                    self.anomaly_detector = IForest(contamination=0.05)
+                    
+                def validate_range(self, param, value, limits):
+                    """Stufe 2: Bereichsvalidierung"""
+                    if limits['min'] <= value <= limits['max']:
+                        return 'PASS', 1
+                    elif value < limits['critical_min'] or value > limits['critical_max']:
+                        return 'FAIL', 4
+                    else:
+                        return 'SUSPECT', 3
+                        
+                def validate_rate_of_change(self, series, max_change):
+                    """Stufe 3: Änderungsratenprüfung"""
+                    changes = series.diff()
+                    spikes = changes[abs(changes) > max_change]
+                    return len(spikes) == 0
+                    
+                def detect_anomalies(self, data):
+                    """Stufe 4: ML-basierte Anomalieerkennung"""
+                    self.anomaly_detector.fit(data)
+                    predictions = self.anomaly_detector.predict(data)
+                    return predictions  # 0 = normal, 1 = anomaly`}
+                      </pre>
+                    </div>
+                  </details>
                 </div>
               </div>
             ),
@@ -352,49 +386,71 @@ class WaterQualityValidator:
           content: {
             experte: (
               <div className="space-y-4">
+                {/* Wissenschaftliche Erklärung */}
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                   <h5 className="font-semibold mb-2">Parameterspezifische Aggregation</h5>
-                  <pre className="text-sm overflow-x-auto">
-{`def aggregate_daily_values(hourly_data, parameter):
-    """Wissenschaftlich fundierte Tagesaggregation"""
-    
-    if parameter == 'temperature':
-        return {
-            'mean': hourly_data.mean(),
-            'min': hourly_data.min(),
-            'max': hourly_data.max(),
-            'std': hourly_data.std(),
-            'range': hourly_data.max() - hourly_data.min()
-        }
-    
-    elif parameter == 'ph':
-        # pH als logarithmische Größe -> Median bevorzugt
-        return {
-            'median': hourly_data.median(),
-            'mean': hourly_data.mean(),
-            'min': hourly_data.min(),
-            'max': hourly_data.max(),
-            'iqr': hourly_data.quantile(0.75) - hourly_data.quantile(0.25)
-        }
-    
-    elif parameter == 'dissolved_oxygen':
-        # Minimum kritisch für aquatisches Leben
-        return {
-            'mean': hourly_data.mean(),
-            'min': hourly_data.min(),
-            'min_time': hourly_data.idxmin(),
-            'percent_below_5mg': (hourly_data < 5).sum() / len(hourly_data) * 100
-        }`}
-                  </pre>
+                  <p className="text-sm mb-3">
+                    Die Zusammenfassung von Stunden- zu Tageswerten erfolgt nicht pauschal, sondern nach parameterspezifischen, wissenschaftlich fundierten Regeln, um die Aussagekraft der Kennwerte zu maximieren.
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-sm">
+                      <li><strong>Temperatur:</strong> Hier sind Mittel-, Minimal- und Maximalwerte relevant, um die Tagesschwankung (Diurnale Amplitude) zu erfassen.</li>
+                      <li><strong>pH-Wert:</strong> Als logarithmische Größe wird für den pH-Wert primär der <strong>Median</strong> als robuster Mittelwert verwendet, da er weniger anfällig für Extremwerte ist.</li>
+                      <li><strong>Gelöster Sauerstoff:</strong> Der <strong>Minimalwert</strong> ist oft der kritischste Indikator für aquatischen Stress, weshalb er gesondert ausgewiesen wird.</li>
+                  </ul>
                 </div>
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                  <h5 className="font-semibold mb-2">Behandlung fehlender Werte</h5>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
-                    <li>Mindestens 18 von 24 Stunden (75%) für gültigen Tageswert</li>
-                    <li>Interpolation bei Lücken <3 Stunden</li>
-                    <li>Gewichtete Mittelwerte bei unregelmäßigen Intervallen</li>
-                    <li>Kennzeichnung imputierter Werte in Metadaten</li>
+                  <h5 className="font-semibold mb-2">Regeln zur Datenverfügbarkeit</h5>
+                  <p className="text-sm mb-3">
+                    Um die Repräsentativität der Tageswerte sicherzustellen, werden international etablierte Regeln angewendet:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-sm">
+                      <li>Ein Tageswert wird nur berechnet, wenn mindestens <strong>75% der Stundenwerte</strong> (18 von 24) innerhalb des Tages als valide eingestuft wurden.</li>
+                      <li>Kleinere Datenlücken von weniger als 3 Stunden können durch lineare Interpolation gefüllt werden, werden aber entsprechend gekennzeichnet.</li>
                   </ul>
+                </div>
+
+                {/* Aufklappbarer Python-Code */}
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  <details>
+                    <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
+                      <span>Python Implementierungsbeispiel</span>
+                      <ChevronDown className="w-5 h-5 transition-transform" />
+                    </summary>
+                    <div className="px-4 pb-4 border-t dark:border-gray-700">
+                      <pre className="text-sm overflow-x-auto mt-4">
+            {`def aggregate_daily_values(hourly_data, parameter):
+                """Wissenschaftlich fundierte Tagesaggregation"""
+                
+                if parameter == 'temperature':
+                    return {
+                        'mean': hourly_data.mean(),
+                        'min': hourly_data.min(),
+                        'max': hourly_data.max(),
+                        'std': hourly_data.std(),
+                        'range': hourly_data.max() - hourly_data.min()
+                    }
+                
+                elif parameter == 'ph':
+                    # pH als logarithmische Größe -> Median bevorzugt
+                    return {
+                        'median': hourly_data.median(),
+                        'mean': hourly_data.mean(),
+                        'min': hourly_data.min(),
+                        'max': hourly_data.max(),
+                        'iqr': hourly_data.quantile(0.75) - hourly_data.quantile(0.25)
+                    }
+                
+                elif parameter == 'dissolved_oxygen':
+                    # Minimum kritisch für aquatisches Leben
+                    return {
+                        'mean': hourly_data.mean(),
+                        'min': hourly_data.min(),
+                        'min_time': hourly_data.idxmin(),
+                        'percent_below_5mg': (hourly_data < 5).sum() / len(hourly_data) * 100
+                    }`}
+                      </pre>
+                    </div>
+                  </details>
                 </div>
               </div>
             ),
@@ -481,39 +537,42 @@ class WaterQualityValidator:
           content: {
             experte: (
               <div className="space-y-4">
-                <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                  <h5 className="font-semibold mb-2">QARTOD Implementation</h5>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center font-bold">1</div>
-                      <div>
-                        <p className="font-medium">Pass</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Daten bestanden alle QC-Tests</p>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                      <h5 className="font-semibold mb-2">Qualitäts-Flags nach QARTOD-Standard</h5>
+                      <p className="text-sm mb-3">
+                          Unser System orientiert sich an internationalen Standards zur Qualitätskennzeichnung wie <strong>QARTOD</strong> (Quality Assurance of Real-Time Oceanographic Data) und <strong>SeaDataNet</strong>, um die Interoperabilität und Vergleichbarkeit der Daten zu gewährleisten. Die einfachen Farb-Codes der App lassen sich wie folgt zuordnen:
+                      </p>
+                      <div className="space-y-2">
+                          <div className="flex items-start space-x-3">
+                              <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center font-bold flex-shrink-0">1</div>
+                              <div>
+                                  <p className="font-medium">Pass (Grün)</p>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">Daten haben alle automatischen QC-Tests bestanden.</p>
+                              </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                              <div className="w-8 h-8 bg-yellow-500 text-white rounded flex items-center justify-center font-bold flex-shrink-0">3</div>
+                              <div>
+                                  <p className="font-medium">Suspect (Gelb)</p>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">Potenziell fehlerhafte Daten, die einer Expertenprüfung bedürfen. Die Daten sind für Trendanalysen, aber nicht für Grenzwertüberprüfungen geeignet.</p>
+                              </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                              <div className="w-8 h-8 bg-red-500 text-white rounded flex items-center justify-center font-bold flex-shrink-0">4</div>
+                              <div>
+                                  <p className="font-medium">Fail (Rot)</p>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">Die Daten haben kritische Tests nicht bestanden und sollten nicht verwendet werden.</p>
+                              </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                              <div className="w-8 h-8 bg-gray-500 text-white rounded flex items-center justify-center font-bold flex-shrink-0">2</div>
+                              <div>
+                                  <p className="font-medium">Not Evaluated</p>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">Daten, die noch keinem QC-Test unterzogen wurden (z.B. bei Systemausfall).</p>
+                              </div>
+                          </div>
                       </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gray-500 text-white rounded flex items-center justify-center font-bold">2</div>
-                      <div>
-                        <p className="font-medium">Not Evaluated</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Keine QC-Tests durchgeführt</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-yellow-500 text-white rounded flex items-center justify-center font-bold">3</div>
-                      <div>
-                        <p className="font-medium">Suspect</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Potenziell korrigierbar</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-red-500 text-white rounded flex items-center justify-center font-bold">4</div>
-                      <div>
-                        <p className="font-medium">Fail</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Kritische Tests nicht bestanden</p>
-                      </div>
-                    </div>
                   </div>
-                </div>
               </div>
             ),
             verwaltung: (
