@@ -4,6 +4,58 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import bpmnProzessExperte from './assets/bpmn-prozess.png';
 import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
 
+// Zentrales Objekt für alle Code-Erklärungen
+const explanations = {
+  validator: {
+    title: "Was tut dieser Code? (Der intelligente Türsteher)",
+    content: (
+      <div className="space-y-3">
+        <p>Dieser Code ist ein Bauplan (class) für einen intelligenten <strong>"Türsteher"</strong> für Ihre Wasserdaten. Seine Aufgabe ist es, jeden einzelnen Messwert nach strengen Regeln zu prüfen.</p>
+        <p>Er hat drei Hauptfähigkeiten (Methoden):</p>
+        <ul className="list-disc list-outside pl-5">
+          <li><strong>validate_range (Das Maßband):</strong> Prüft, ob ein Wert innerhalb eines erwarteten Bereichs liegt.</li>
+          <li><strong>validate_rate_of_change (Der Geschwindigkeitsmesser):</strong> Erkennt unrealistische Sprünge zwischen zwei Messungen.</li>
+          <li><strong>detect_anomalies (Der Profiler):</strong> Nutzt künstliche Intelligenz (IForest), um komplexe, verdächtige Muster zu finden.</li>
+        </ul>
+        <h6 className="font-semibold pt-2 border-t dark:border-gray-700">Verwendete Bibliotheken</h6>
+        <p>Für seine Arbeit nutzt er mächtige, frei verfügbare "Spezial-Werkzeuge":</p>
+        <ul className="list-disc list-outside pl-5">
+          <li><strong>pandas:</strong> Das "Schweizer Taschenmesser" zur Organisation der Daten in Tabellen.</li>
+          <li><strong>pyod:</strong> Eine spezialisierte "Werkzeugkiste" mit über 50 Algorithmen zur Anomalieerkennung.</li>
+          <li><strong>IForest:</strong> Einer der effizientesten "Detektive" aus der pyod-Kiste, der Ausreißer findet, indem er prüft, wie leicht sie sich von anderen Daten isolieren lassen.</li>
+        </ul>
+      </div>
+    )
+  },
+  consolidator: {
+    title: "Was tut dieser Code? (Der sorgfältige Archivar)",
+    content: (
+      <div className="space-y-3">
+        <p>Diese Funktion ist der <strong>"sorgfältige Archivar"</strong> des Projekts. Nachdem der "Türsteher" die Daten geprüft hat, erstellt der Archivar am Ende des Tages eine aussagekräftige und wissenschaftlich korrekte Zusammenfassung.</p>
+        <p>Ein einfacher Mittelwert wäre oft irreführend. Daher wendet der Archivar <strong>parameterspezifische Methoden</strong> an:</p>
+        <ul className="list-disc list-outside pl-5">
+          <li><strong>Temperatur:</strong> Mittelwert, Minimum und Maximum, um die volle thermische Dynamik zu erfassen.</li>
+          <li><strong>pH-Wert:</strong> Der Median, da dieser bei einer logarithmischen Skala robuster gegen Ausreißer ist.</li>
+          <li><strong>Gelöster Sauerstoff:</strong> Das tägliche Minimum als kritischste Kennzahl für das Leben im See.</li>
+        </ul>
+        <p>Zudem gilt der Grundsatz der Repräsentativität: Eine Zusammenfassung wird nur erstellt, wenn mindestens 75% der Stundenwerte des Tages vorliegen.</p>
+      </div>
+    )
+  },
+  api: {
+    title: "Was tut dieser Code? (Die öffentliche Auskunft)",
+    content: (
+      <div className="space-y-3">
+        <p>Dieser Code erschafft die <strong>"öffentliche Auskunftstheke"</strong> Ihres Datensystems, eine sogenannte API (Application Programming Interface). Sie ist wie ein extrem fähiger Bibliothekar, der auf Anfragen von außen wartet.</p>
+        <ul>
+          <li><strong>FastAPI:</strong> Ist die von uns genutzte Technologie. Sie ist besonders schnell und erstellt automatisch eine "Bedienungsanleitung" (interaktive Dokumentation) für andere Entwickler.</li>
+          <li><strong>@app.get(...):</strong> Definiert eine "Bestellung", die der Bibliothekar entgegennehmen kann, z.B.: "Gib mir alle pH-Werte vom Mai für Station X".</li>
+          <li><strong>Das Ergebnis:</strong> Der Dienst holt die bestellten, sauberen Daten aus dem "Archiv" (der Datenbank) und liefert sie auf einem standardisierten "Tablett" (im JSON-Format) aus.</li>
+        </ul>
+      </div>
+    )
+  }
+};
 
 // Daten für die "Nutzen & Anwendungsfälle"-Karten und Modals
 // NEUE DATENSTRUKTUR für zielgruppenspezifische Anwendungsfälle
@@ -485,10 +537,30 @@ const UseCaseModal = ({ useCase, onClose }) => {
   );
 };
 
+// Komponente für die Code-Erklärungen
+const ExplanationModal = ({ explanation, onClose }) => {
+  if (!explanation) return null;
 
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate-in fade-in-20" onClick={onClose}>
+      <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-[90%] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="p-6">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{explanation.title}</h3>
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            {explanation.content}
+          </div>
+        </div>
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+          <X className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   const [selectedUseCase, setSelectedUseCase] = useState(null);
+  const [codeExplanation, setCodeExplanation] = useState(null);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
   const [userLevel, setUserLevel] = useState('verwaltung');
@@ -1733,247 +1805,265 @@ async def get_observations(
         title: 'Python-Skripte',
         content: {
           experte: (
-            <div className="space-y-4 text-sm">
-              <p className="text-gray-600 dark:text-gray-400">
-                Dieser Katalog zentralisiert die Kern-Logiken der Datenverarbeitungspipeline. Die folgenden Python-Skripte dienen als Referenzimplementierung und Grundlage für das operative System. Zukünftig sollen sie als Open Source zur Verfügung gestellt werden.
-              </p>
+              <div className="space-y-4 text-sm">
+                <p className="text-gray-600 dark:text-gray-400">
+                  Dieser Katalog zentralisiert die Kern-Logiken der Datenverarbeitungspipeline. Die folgenden Python-Skripte dienen als Referenzimplementierung und Grundlage für das operative System. Zukünftig sollen sie als Open Source zur Verfügung gestellt werden.
+                </p>
+                
+                {[
+                  {
+                    title: "1. Validierungs-Klasse (validator.py)",
+                    code: `import pandas as pd
+          from pyod.models.iforest import IForest
+
+          class WaterQualityValidator:
+              def __init__(self):
+                  self.anomaly_detector = IForest(contamination=0.05)
+                  
+              def validate_range(self, param, value, limits):
+                  """Stufe 2: Bereichsvalidierung"""
+                  if limits['min'] <= value <= limits['max']:
+                      return 'PASS', 1
+                  elif value < limits['critical_min'] or value > limits['critical_max']:
+                      return 'FAIL', 4
+                  else:
+                      return 'SUSPECT', 3
+                      
+              def validate_rate_of_change(self, series, max_change):
+                  """Stufe 3: Änderungsratenprüfung"""
+                  changes = series.diff()
+                  spikes = changes[abs(changes) > max_change]
+                  return len(spikes) == 0
+                  
+              def detect_anomalies(self, data):
+                  """Stufe 4: ML-basierte Anomalieerkennung"""
+                  self.anomaly_detector.fit(data)
+                  predictions = self.anomaly_detector.predict(data)
+                  return predictions  # 0 = normal, 1 = anomaly`,
+                    explanation: explanations.validator
+                  },
+                  {
+                    title: "2. Konsolidierungs-Funktion (consolidator.py)",
+                    code: `def aggregate_daily_values(hourly_data, parameter):
+              """Wissenschaftlich fundierte Tagesaggregation"""
               
-              {/* Code für Validierung */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <details>
-                  <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
-                    <span>1. Validierungs-Klasse (WaterQualityValidator)</span>
-                    <ChevronDown className="w-5 h-5 transition-transform" />
-                  </summary>
-                  <div className="px-4 pb-4 border-t dark:border-gray-700">
-                    <pre className="text-sm overflow-x-auto mt-4">
-                    {`import pandas as pd
-                    from pyod.models.iforest import IForest
+              # Sicherstellen, dass genügend Daten vorhanden sind (mind. 75%)
+              if hourly_data.count() < 18:
+                  return {'error': 'Nicht genügend valide Daten für eine repräsentative Aggregation.'}
 
-                    class WaterQualityValidator:
-                        def __init__(self):
-                            self.anomaly_detector = IForest(contamination=0.05)
-                            
-                        def validate_range(self, param, value, limits):
-                            """Stufe 2: Bereichsvalidierung"""
-                            if limits['min'] <= value <= limits['max']:
-                                return 'PASS', 1
-                            elif value < limits['critical_min'] or value > limits['critical_max']:
-                                return 'FAIL', 4
-                            else:
-                                return 'SUSPECT', 3
-                                
-                        def validate_rate_of_change(self, series, max_change):
-                            """Stufe 3: Änderungsratenprüfung"""
-                            changes = series.diff()
-                            spikes = changes[abs(changes) > max_change]
-                            return len(spikes) == 0
-                            
-                        def detect_anomalies(self, data):
-                            """Stufe 4: ML-basierte Anomalieerkennung"""
-                            self.anomaly_detector.fit(data)
-                            predictions = self.anomaly_detector.predict(data)
-                            return predictions  # 0 = normal, 1 = anomaly`
+              if parameter == 'temperature':
+                  return {'mean': hourly_data.mean(), 'min': hourly_data.min(), 'max': hourly_data.max()}
+              
+              elif parameter == 'ph':
+                  # pH als logarithmische Größe -> Median bevorzugt
+                  return {'median': hourly_data.median(), 'min': hourly_data.min(), 'max': hourly_data.max()}
+              
+              elif parameter == 'dissolved_oxygen':
+                  # Das tägliche Minimum ist hier die ökologisch kritischste Kennzahl
+                  return {'mean': hourly_data.mean(), 'min': hourly_data.min()}`,
+                    explanation: explanations.consolidator
+                  },
+                  {
+                    title: "3. API-Endpunkt (Datenbereitstellung)",
+                    code: `# FastAPI Implementation
+          from fastapi import FastAPI, Query
+          from datetime import date
+          from typing import List
+
+          app = FastAPI(title="Water Quality API", version="1.0")
+
+          @app.get("/api/v1/observations")
+          async def get_observations(
+              station_id: str,
+              parameter: str,
+              start_date: date,
+              end_date: date,
+              quality_flags: List[int] = Query([1]) # Standardmäßig nur "gute" Daten abfragen
+          ):
+              """Stellt validierte und aggregierte Daten nach dem OGC SensorThings Standard bereit."""
+              
+              # Hier würde die Logik zur Abfrage der finalen Datenbanktabelle stehen
+              # z.B. query_database(station_id, parameter, start_date, end_date, quality_flags)
+              
+              return {
+                  "value": [
+                      {
+                          "phenomenonTime": "2025-04-28T00:00:00Z",
+                          "result": 10.2, # Beispiel: Tagesmittel der Temperatur
+                          "parameters": { "station": station_id, "parameter": parameter }
                       }
-                    </pre>
+                  ]
+              }`,
+                    explanation: explanations.api
+                  }
+                ].map(item => (
+                  <div key={item.title} className="bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <details>
+                      <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
+                        <span className="flex-grow">{item.title}</span>
+                        <button 
+                          onClick={(e) => { e.preventDefault(); setCodeExplanation(item.explanation); }}
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline mr-4"
+                        >
+                          (Was tut dieser Code?)
+                        </button>
+                        <ChevronDown className="w-5 h-5 transition-transform" />
+                      </summary>
+                      <div className="px-4 pb-4 border-t dark:border-gray-700">
+                        <pre className="text-sm overflow-x-auto mt-4">{item.code}</pre>
+                      </div>
+                    </details>
                   </div>
-                </details>
+                ))}
               </div>
-
-              {/* Code für Aggregation */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <details>
-                  <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
-                    <span>2. Konsolidierungs-Funktion (Tageswerte)</span>
-                    <ChevronDown className="w-5 h-5 transition-transform" />
-                  </summary>
-                  <div className="px-4 pb-4 border-t dark:border-gray-700">
-                    <pre className="text-sm overflow-x-auto mt-4">
-                      {`def aggregate_daily_values(hourly_data, parameter):
-                          """Wissenschaftlich fundierte Tagesaggregation"""
-                          
-                          if parameter == 'temperature':
-                              return {'mean': hourly_data.mean(), 'min': hourly_data.min(), 'max': hourly_data.max()}
-                          
-                          elif parameter == 'ph':
-                              # pH als logarithmische Größe -> Median bevorzugt
-                              return {'median': hourly_data.median(), 'min': hourly_data.min(), 'max': hourly_data.max()}
-                          
-                          elif parameter == 'dissolved_oxygen':
-                              # Minimum kritisch für aquatisches Leben
-                              return {'mean': hourly_data.mean(), 'min': hourly_data.min()}
-                      `}
-                    </pre>
-                  </div>
-                </details>
-              </div>
-
-              {/* Code für API */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <details>
-                  <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
-                    <span>3. API-Endpunkt (Datenbereitstellung)</span>
-                    <ChevronDown className="w-5 h-5 transition-transform" />
-                  </summary>
-                  <div className="px-4 pb-4 border-t dark:border-gray-700">
-                    <pre className="text-sm overflow-x-auto mt-4">
-                      {`# FastAPI Implementation
-                      from fastapi import FastAPI, Query
-                      from datetime import date
-                      from typing import List
-
-                      app = FastAPI(title="Water Quality API")
-
-                      @app.get("/api/v1/observations")
-                      async def get_observations(
-                          station_id: str,
-                          parameter: str,
-                          start_date: date,
-                          end_date: date,
-                          quality_flags: List[int] = Query([1,2,3])
-                      ):
-                          """OGC SensorThings konformer Endpoint"""
-                          # Hier würde die Datenbankabfrage stattfinden
-                          return {
-                              "@iot.count": 1,
-                              "value": [
-                                  {
-                                      "@iot.id": "obs123",
-                                      "phenomenonTime": "2025-01-20T10:00:00Z",
-                                      "result": 7.8,
-                                      "resultQuality": {"qartod_flag": 1}
-                                  }
-                              ]
-                          }`}
-                    </pre>
-                  </div>
-                </details>
-              </div>
-            </div>
           ),
           verwaltung: (
-            // Verwaltung bekommt dieselbe Ansicht wie Experte
-            <div className="space-y-4 text-sm">
-              <p className="text-gray-600 dark:text-gray-400">
-                Dieser Katalog zentralisiert die Kern-Logiken der Datenverarbeitungspipeline. Die folgenden Python-Skripte dienen als Referenzimplementierung und Grundlage für das operative System. Zukünftig sollen sie als Open Source zur Verfügung gestellt werden.
-              </p>
+              <div className="space-y-4 text-sm">
+                <p className="text-gray-600 dark:text-gray-400">
+                  Dieser Katalog zentralisiert die Kern-Logiken der Datenverarbeitungspipeline. Die folgenden Python-Skripte dienen als Referenzimplementierung und Grundlage für das operative System. Zukünftig sollen sie als Open Source zur Verfügung gestellt werden.
+                </p>
+                
+                {[
+                  {
+                    title: "1. Validierungs-Klasse (validator.py)",
+                    code: `import pandas as pd
+          from pyod.models.iforest import IForest
+
+          class WaterQualityValidator:
+              def __init__(self):
+                  self.anomaly_detector = IForest(contamination=0.05)
+                  
+              def validate_range(self, param, value, limits):
+                  """Stufe 2: Bereichsvalidierung"""
+                  if limits['min'] <= value <= limits['max']:
+                      return 'PASS', 1
+                  elif value < limits['critical_min'] or value > limits['critical_max']:
+                      return 'FAIL', 4
+                  else:
+                      return 'SUSPECT', 3
+                      
+              def validate_rate_of_change(self, series, max_change):
+                  """Stufe 3: Änderungsratenprüfung"""
+                  changes = series.diff()
+                  spikes = changes[abs(changes) > max_change]
+                  return len(spikes) == 0
+                  
+              def detect_anomalies(self, data):
+                  """Stufe 4: ML-basierte Anomalieerkennung"""
+                  self.anomaly_detector.fit(data)
+                  predictions = self.anomaly_detector.predict(data)
+                  return predictions  # 0 = normal, 1 = anomaly`,
+                    explanation: explanations.validator
+                  },
+                  {
+                    title: "2. Konsolidierungs-Funktion (consolidator.py)",
+                    code: `def aggregate_daily_values(hourly_data, parameter):
+              """Wissenschaftlich fundierte Tagesaggregation"""
               
-              {/* Code für Validierung */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <details>
-                  <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
-                    <span>1. Validierungs-Klasse (WaterQualityValidator)</span>
-                    <ChevronDown className="w-5 h-5 transition-transform" />
-                  </summary>
-                  <div className="px-4 pb-4 border-t dark:border-gray-700">
-                    <pre className="text-sm overflow-x-auto mt-4">
-                    {`import pandas as pd
-                    from pyod.models.iforest import IForest
+              # Sicherstellen, dass genügend Daten vorhanden sind (mind. 75%)
+              if hourly_data.count() < 18:
+                  return {'error': 'Nicht genügend valide Daten für eine repräsentative Aggregation.'}
 
-                    class WaterQualityValidator:
-                        def __init__(self):
-                            self.anomaly_detector = IForest(contamination=0.05)
-                            
-                        def validate_range(self, param, value, limits):
-                            """Stufe 2: Bereichsvalidierung"""
-                            if limits['min'] <= value <= limits['max']:
-                                return 'PASS', 1
-                            elif value < limits['critical_min'] or value > limits['critical_max']:
-                                return 'FAIL', 4
-                            else:
-                                return 'SUSPECT', 3
-                                
-                        def validate_rate_of_change(self, series, max_change):
-                            """Stufe 3: Änderungsratenprüfung"""
-                            changes = series.diff()
-                            spikes = changes[abs(changes) > max_change]
-                            return len(spikes) == 0
-                            
-                        def detect_anomalies(self, data):
-                            """Stufe 4: ML-basierte Anomalieerkennung"""
-                            self.anomaly_detector.fit(data)
-                            predictions = self.anomaly_detector.predict(data)
-                            return predictions  # 0 = normal, 1 = anomaly`
+              if parameter == 'temperature':
+                  return {'mean': hourly_data.mean(), 'min': hourly_data.min(), 'max': hourly_data.max()}
+              
+              elif parameter == 'ph':
+                  # pH als logarithmische Größe -> Median bevorzugt
+                  return {'median': hourly_data.median(), 'min': hourly_data.min(), 'max': hourly_data.max()}
+              
+              elif parameter == 'dissolved_oxygen':
+                  # Das tägliche Minimum ist hier die ökologisch kritischste Kennzahl
+                  return {'mean': hourly_data.mean(), 'min': hourly_data.min()}`,
+                    explanation: explanations.consolidator
+                  },
+                  {
+                    title: "3. API-Endpunkt (Datenbereitstellung)",
+                    code: `# FastAPI Implementation
+          from fastapi import FastAPI, Query
+          from datetime import date
+          from typing import List
+
+          app = FastAPI(title="Water Quality API", version="1.0")
+
+          @app.get("/api/v1/observations")
+          async def get_observations(
+              station_id: str,
+              parameter: str,
+              start_date: date,
+              end_date: date,
+              quality_flags: List[int] = Query([1]) # Standardmäßig nur "gute" Daten abfragen
+          ):
+              """Stellt validierte und aggregierte Daten nach dem OGC SensorThings Standard bereit."""
+              
+              # Hier würde die Logik zur Abfrage der finalen Datenbanktabelle stehen
+              # z.B. query_database(station_id, parameter, start_date, end_date, quality_flags)
+              
+              return {
+                  "value": [
+                      {
+                          "phenomenonTime": "2025-04-28T00:00:00Z",
+                          "result": 10.2, # Beispiel: Tagesmittel der Temperatur
+                          "parameters": { "station": station_id, "parameter": parameter }
                       }
-                    </pre>
+                  ]
+              }`,
+                    explanation: explanations.api
+                  }
+                ].map(item => (
+                  <div key={item.title} className="bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <details>
+                      <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
+                        <span className="flex-grow">{item.title}</span>
+                        <button 
+                          onClick={(e) => { e.preventDefault(); setCodeExplanation(item.explanation); }}
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline mr-4"
+                        >
+                          (Was tut dieser Code?)
+                        </button>
+                        <ChevronDown className="w-5 h-5 transition-transform" />
+                      </summary>
+                      <div className="px-4 pb-4 border-t dark:border-gray-700">
+                        <pre className="text-sm overflow-x-auto mt-4">{item.code}</pre>
+                      </div>
+                    </details>
                   </div>
-                </details>
+                ))}
               </div>
-
-              {/* Code für Aggregation */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <details>
-                  <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
-                    <span>2. Konsolidierungs-Funktion (Tageswerte)</span>
-                    <ChevronDown className="w-5 h-5 transition-transform" />
-                  </summary>
-                  <div className="px-4 pb-4 border-t dark:border-gray-700">
-                    <pre className="text-sm overflow-x-auto mt-4">
-                      {`def aggregate_daily_values(hourly_data, parameter):
-                          """Wissenschaftlich fundierte Tagesaggregation"""
-                          
-                          if parameter == 'temperature':
-                              return {'mean': hourly_data.mean(), 'min': hourly_data.min(), 'max': hourly_data.max()}
-                          
-                          elif parameter == 'ph':
-                              # pH als logarithmische Größe -> Median bevorzugt
-                              return {'median': hourly_data.median(), 'min': hourly_data.min(), 'max': hourly_data.max()}
-                          
-                          elif parameter == 'dissolved_oxygen':
-                              # Minimum kritisch für aquatisches Leben
-                              return {'mean': hourly_data.mean(), 'min': hourly_data.min()}
-                      `}
-                    </pre>
-                  </div>
-                </details>
-              </div>
-
-              {/* Code für API */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <details>
-                  <summary className="px-4 py-3 font-medium cursor-pointer flex justify-between items-center">
-                    <span>3. API-Endpunkt (Datenbereitstellung)</span>
-                    <ChevronDown className="w-5 h-5 transition-transform" />
-                  </summary>
-                  <div className="px-4 pb-4 border-t dark:border-gray-700">
-                    <pre className="text-sm overflow-x-auto mt-4">
-                      {`# FastAPI Implementation
-                      from fastapi import FastAPI, Query
-                      from datetime import date
-                      from typing import List
-
-                      app = FastAPI(title="Water Quality API")
-
-                      @app.get("/api/v1/observations")
-                      async def get_observations(
-                          station_id: str,
-                          parameter: str,
-                          start_date: date,
-                          end_date: date,
-                          quality_flags: List[int] = Query([1,2,3])
-                      ):
-                          """OGC SensorThings konformer Endpoint"""
-                          # Hier würde die Datenbankabfrage stattfinden
-                          return {
-                              "@iot.count": 1,
-                              "value": [
-                                  {
-                                      "@iot.id": "obs123",
-                                      "phenomenonTime": "2025-01-20T10:00:00Z",
-                                      "result": 7.8,
-                                      "resultQuality": {"qartod_flag": 1}
-                                  }
-                              ]
-                          }`}
-                    </pre>
-                  </div>
-                </details>
-              </div>
-            </div>
           ),
           buerger: (
-            <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
-              <p>Transparenz ist uns wichtig. An dieser Stelle wird der Computer-Code (Quellcode) veröffentlicht, der zur Prüfung und Aufbereitung der Wasserdaten verwendet wird. Dies ermöglicht eine unabhängige Überprüfung unserer Methoden und fördert die Wiederverwendbarkeit im Sinne von Open Source.</p>
+            <div className="space-y-6 text-sm text-gray-700 dark:text-gray-300">
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <h6 className="font-semibold text-green-800 dark:text-green-300 mb-2">Wie funktioniert die Datenverarbeitung im Hintergrund?</h6>
+                <p>
+                  Man kann sich den Weg der Daten wie ein Fließband in einer Fabrik vorstellen. Jede Station hat eine spezielle Aufgabe, um aus einem Rohprodukt ein fertiges, geprüftes Produkt zu machen.
+                </p>
+              </div>
+
+              {/* Visuelle Darstellung der Pipeline */}
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-center text-xs font-medium">
+                  <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg flex flex-col items-center justify-center space-y-1">
+                    <Activity className="w-6 h-6 text-blue-500" />
+                    <span>1. Messung</span>
+                  </div>
+                  <div className="flex items-center justify-center"><ChevronRight className="w-5 h-5 text-gray-400" /></div>
+                  <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg flex flex-col items-center justify-center space-y-1">
+                    <Shield className="w-6 h-6 text-purple-500" />
+                    <span>2. Qualitäts-Check</span>
+                  </div>
+                  <div className="flex items-center justify-center"><ChevronRight className="w-5 h-5 text-gray-400" /></div>
+                  <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg flex flex-col items-center justify-center space-y-1">
+                    <BarChart3 className="w-6 h-6 text-green-500" />
+                    <span>3. Tages-Info</span>
+                  </div>
+                </div>
+              </div>
+              
+              <ul className="list-decimal list-outside pl-5 space-y-2">
+                  <li>Die Sensoren im See senden ihre stündlichen Messwerte.</li>
+                  <li>Ein Computerprogramm prüft sofort, ob die Werte plausibel sind und kennzeichnet sie mit einer Qualitäts-Ampel.</li>
+                  <li>Einmal pro Nacht werden alle "grünen" Werte des Tages zu einer einzigen, aussagekräftigen Tages-Information (z.B. "Durchschnittstemperatur") zusammengefasst, die Sie dann auf der Webseite sehen.</li>
+              </ul>
             </div>
           )
         }
@@ -2591,6 +2681,7 @@ async def get_observations(
       </div>
       <ImageModal imageUrl={modalImageUrl} onClose={() => setModalImageUrl(null)} />
       <UseCaseModal useCase={selectedUseCase} onClose={() => setSelectedUseCase(null)} />
+      <ExplanationModal explanation={codeExplanation} onClose={() => setCodeExplanation(null)} />
     </div>
   );
 }
