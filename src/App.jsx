@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon } from 'lucide-react';
+import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+
+
+
+const useCases = [
+  {
+    id: 'tourism',
+    title: 'Prädiktiver Tourismus',
+    icon: Ship,
+    target: 'Tourismus, Kommunen, Bürger',
+    summary: 'KI-gestützte Vorhersage der Badewasserqualität zur Vermeidung unnötiger Seesperrungen und zum Schutz der öffentlichen Gesundheit.',
+    details: {
+      problem: 'Kurzfristige Algenblüten stellen ein Gesundheitsrisiko dar und führen oft zu pauschalen, langen Sperrungen, die wirtschaftlichen Schaden im Tourismus verursachen.',
+      solution: 'Durch die Kombination von Echtzeit-Sensordaten (Chlorophyll, Phycocyanin, etc.) mit externen Daten (Wettervorhersage) können KI-Modelle die Wahrscheinlichkeit einer Algenblüte 48-72 Stunden im Voraus berechnen.',
+      benefit: 'Ermöglicht proaktives Gewässermanagement und sichert die Einnahmen der Tourismuswirtschaft. Steigert die Attraktivität der Region durch verlässliche Informationen.',
+      example: 'Inspiriert von Systemen wie EOMAP (satellitengestützte Wasserqualitätsanalyse) und den Vorhersagemodellen des IGB (Leibniz-Institut für Gewässerökologie).'
+    }
+  },
+  // Hier können Sie später weitere Objekte für neue Anwendungsfälle hinzufügen
+];
+
 
 // Beispieldaten basierend auf Useriner-See_2025-04-28.csv
 const dailyChartData = [
@@ -291,7 +311,55 @@ const ImageModal = ({ imageUrl, onClose }) => {
   );
 };
 
+// Komponente für das "Nutzen & Anwendungsfälle"-Modal
+const UseCaseModal = ({ useCase, onClose }) => {
+  if (!useCase) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate-in fade-in-20" onClick={onClose}>
+      <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-[90%] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="p-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg">
+              <useCase.icon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{useCase.title}</h3>
+              <p className="text-sm text-gray-500">{useCase.target}</p>
+            </div>
+          </div>
+          
+          <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <div>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-200">Problemstellung</h4>
+              <p>{useCase.details.problem}</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-200">Lösungsansatz</h4>
+              <p>{useCase.details.solution}</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-200">Konkreter Nutzen</h4>
+              <p>{useCase.details.benefit}</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-200">Praxisbeispiele / Inspiration</h4>
+              <p>{useCase.details.example}</p>
+            </div>
+          </div>
+        </div>
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+          <X className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
+
 function App() {
+  const [selectedUseCase, setSelectedUseCase] = useState(null);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
   const [userLevel, setUserLevel] = useState('verwaltung');
@@ -1465,9 +1533,60 @@ async def get_observations(
         id: 'use-cases',
         title: 'Beispiele und Ideen',
         content: {
-          experte: <p>Platzhalter: Visualisierte Steckbriefe für Anwendungsfälle wie "Algenblüten-Frühwarnung", "Nährstoff-Frachtberechnung" oder "Grundlage für KI-Modelle".</p>,
-          verwaltung: <p>Platzhalter: Visualisierte Steckbriefe für Anwendungsfälle wie "Algenblüten-Frühwarnung", "Nährstoff-Frachtberechnung" oder "Grundlage für KI-Modelle".</p>,
-          buerger: <p>Platzhalter: Visualisierte Steckbriefe für Anwendungsfälle wie "Algenblüten-Frühwarnung", "Nährstoff-Frachtberechnung" oder "Grundlage für KI-Modelle".</p>
+          experte: (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert für Kommunen und Unternehmen. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
+              </p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {useCases.map(useCase => (
+                  <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
+                    <div className="flex items-center space-x-3">
+                      <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
+                      <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
+                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ),
+          verwaltung: (
+            // Verwaltung bekommt dieselbe Ansicht wie Experte
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert für Kommunen und Unternehmen. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
+              </p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {useCases.map(useCase => (
+                  <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
+                    <div className="flex items-center space-x-3">
+                      <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
+                      <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
+                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ),
+          buerger: (
+            <div className="space-y-4">
+              {useCases.map(useCase => (
+                <div key={useCase.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" /></div>
+                    <h6 className="font-semibold">{useCase.title}</h6>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{useCase.summary}</p>
+                </div>
+              ))}
+            </div>
+          )
         }
       }]
     },
@@ -1477,9 +1596,9 @@ async def get_observations(
       title: 'Code-Katalog',
       icon: <Code className="w-6 h-6" />,
       intro: {
-        experte: 'Der vollständige, produktive Python-Code für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
-        verwaltung: 'Der vollständige, produktive Python-Code für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
-        buerger: 'Der offengelegte Programmcode, der für die Prüfung und Aufbereitung der Daten verwendet wird.'
+        experte: 'Der vollständige, produktive Python-Code (später Open-Source zur Nachnutzung) für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
+        verwaltung: 'Der vollständige, produktive Python-Code (später Open-Source zur Nachnutzung) für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
+        buerger: 'Der offengelegte Programmcode (später Open-Source zur Nachnutzung), der für die Prüfung und Aufbereitung der Daten verwendet wird.'
       },
       sections: [{
         id: 'code-collection',
@@ -2102,6 +2221,7 @@ async def get_observations(
         </main>
       </div>
       <ImageModal imageUrl={modalImageUrl} onClose={() => setModalImageUrl(null)} />
+      <UseCaseModal useCase={selectedUseCase} onClose={() => setSelectedUseCase(null)} />
     </div>
   );
 }
