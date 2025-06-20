@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy } from 'lucide-react';
+import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 // Beispieldaten basierend auf Useriner-See_2025-04-28.csv
@@ -17,6 +17,8 @@ const dailyChartData = [
   { time: '20:00', pH: 8.78, sauerstoff: 13.0 }, { time: '21:00', pH: 8.74, sauerstoff: 12.8 },
   { time: '22:00', pH: 8.70, sauerstoff: 12.6 }, { time: '23:00', pH: 8.68, sauerstoff: 12.5 },
 ];
+
+
 
 // Eigene Komponente für die Grafik
 const TagesgangChart = () => (
@@ -262,7 +264,35 @@ const CostBenefitRadarChart = () => (
   </div>
 );
 
+// Komponente für das vergrößerte Bild-Modal
+// Komponente für das vergrößerte Bild-Modal
+const ImageModal = ({ imageUrl, onClose }) => {
+  if (!imageUrl) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate-in fade-in-20"
+      onClick={onClose}
+    >
+      {/* HIER WURDE max-w-4xl zu max-w-6xl geändert */}
+      <div 
+        className="relative max-w-6xl w-[90%] p-4" // w-[90%] sorgt für gute Darstellung auf allen Bildschirmgrößen
+        onClick={(e) => e.stopPropagation()} 
+      >
+        <button 
+          onClick={onClose}
+          className="absolute top-0 right-0 bg-white dark:bg-gray-800 rounded-full p-1.5 shadow-lg hover:scale-110 transition-transform"
+        >
+          <X className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+        </button>
+        <img src={imageUrl} alt="Vergrößerte Ansicht des Prozessdiagramms" className="w-full h-auto max-h-[90vh] object-contain rounded-lg" />
+      </div>
+    </div>
+  );
+};
+
 function App() {
+  const [modalImageUrl, setModalImageUrl] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
   const [userLevel, setUserLevel] = useState('verwaltung');
   const [activeStep, setActiveStep] = useState(0);
@@ -328,6 +358,98 @@ function App() {
   };
 
   const steps = [
+    // NEU: 1. Einleitung
+    {
+      id: 'einleitung-motivation',
+      title: 'Von Rohdaten zu wertvoller Information',
+      icon: <Zap className="w-6 h-6" />,
+      intro: {
+        experte: 'Die strategische Motivation und der wissenschaftliche sowie gesellschaftliche Mehrwert des Projekts zur Aufbereitung von Wasserqualitätsdaten.',
+        verwaltung: 'Die strategische Motivation und der wissenschaftliche sowie gesellschaftliche Mehrwert des Projekts zur Aufbereitung von Wasserqualitätsdaten.',
+        buerger: 'Warum betreiben wir diesen Aufwand? Der Weg von einer einfachen Messung im See zu einer verlässlichen Information für alle.'
+      },
+      sections: [{
+        id: 'mission-statement',
+        title: 'Projektvision und Ziele',
+        content: {
+        buerger: (
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <h5 className="font-bold text-lg mb-2 text-green-800 dark:text-green-300">🏠 Für Bürgerinnen und Bürger</h5>
+              <h6 className="font-semibold mb-2">Saubere Daten für saubere Seen</h6>
+              <p className="text-sm mb-3">Unsere schwimmenden Messstationen senden rund um die Uhr Daten über die Wasserqualität unserer acht Seen. Aber diese Rohdaten sind wie ungewaschenes Gemüse aus dem Garten - sie enthalten noch "Dreck" und sind nicht direkt verwendbar.</p>
+              
+              <strong className="text-sm">Warum ist das wichtig für Sie?</strong>
+              <ul className="list-disc list-outside pl-5 mt-1 text-sm space-y-1">
+                <li><b>Ihre Gesundheit:</b> Nur durch sorgfältige Datenprüfung können wir Ihnen verlässlich sagen, ob das Baden heute sicher ist.</li>
+                <li><b>Ihre Freizeit:</b> Falsche Warnungen würden bedeuten, dass Seen unnötig gesperrt werden - richtige Daten sorgen für mehr Badespaß.</li>
+                <li><b>Ihr Zuhause:</b> Saubere Gewässer steigern den Wert Ihrer Immobilie und die Attraktivität unserer Region.</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <h6 className="font-semibold mb-2 text-red-800 dark:text-red-300">Was passiert ohne Datenaufbereitung?</h6>
+              <p className="text-sm">Stellen Sie sich vor, ein Sensor zeigt durch einen technischen Fehler plötzlich extrem schlechte Werte an. Ohne Prüfung würden wir möglicherweise einen völlig harmlosen See unnötig sperren. Oder schlimmer: Ein echter Alarm wird übersehen, weil so viele Fehlmeldungen eingehen. Durch die professionelle Aufbereitung erhalten Sie vertrauenswürdige Informationen, auf die Sie sich verlassen können - für Ihre Familie und Ihre Freizeitplanung.</p>
+            </div>
+          </div>
+        ),
+        verwaltung: (
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <h5 className="font-bold text-lg mb-2 text-blue-800 dark:text-blue-300">🏛️ Für Verwaltung und Politik</h5>
+              <h6 className="font-semibold mb-2">Rechtssicherheit und Effizienz durch qualitätsgesicherte Daten</h6>
+              <p className="text-sm mb-3">Der Landkreis Vorpommern-Greifswald steht als untere Wasserbehörde unter erheblichen rechtlichen Verpflichtungen. Die EU-Wasserrahmenrichtlinie, das Wasserhaushaltsgesetz und die Badegewässerverordnung verlangen fundierte Entscheidungsgrundlagen.</p>
+              
+              <strong className="text-sm">Warum professionelle Datenaufbereitung unverzichtbar ist:</strong>
+              <ul className="list-disc list-outside pl-5 mt-1 text-sm space-y-1">
+                <li><b>Rechtssicherheit:</b> Behördliche Entscheidungen müssen wissenschaftlich fundiert sein. Ungeprüfte Rohdaten bieten keinen Rechtsschutz bei Haftungsfragen.</li>
+                <li><b>Kosteneffizienz:</b> Falsche Alarme führen zu teuren Fehlentscheidungen. Ein ungerechtfertigter Badeverbot kostet die lokale Tourismuswirtschaft Tausende Euro pro Tag.</li>
+                <li><b>Berichtspflichten:</b> Das Land MV und die EU erwarten standardisierte, qualitätsgeprüfte Daten für offizielle Berichte.</li>
+              </ul>
+              <p className="text-sm mt-3">Die Investition in Datenqualität zahlt sich durch vermiedene Haftungsrisiken, effizientere Ressourcennutzung und bessere Entscheidungsgrundlagen mehrfach aus.</p>
+            </div>
+            <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <h6 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Konkrete Vorteile für den Landkreis</h6>
+              <ul className="list-disc list-outside pl-5 text-sm space-y-1">
+                  <li><b>Früherkennung:</b> Qualitätsgesicherte Daten ermöglichen präventive Maßnahmen statt teurer Krisenbewältigung.</li>
+                  <li><b>Fördermittel:</b> EU-Umweltprogramme bevorzugen Antragsteller mit nachgewiesener Datenqualität.</li>
+                  <li><b>Bürgerzufriedenheit:</b> Verlässliche Informationen stärken das Vertrauen in die Kreisverwaltung.</li>
+              </ul>
+            </div>
+          </div>
+        ),
+        experte: (
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
+            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <h5 className="font-bold text-lg mb-2 text-purple-800 dark:text-purple-300">🔬 Für Experten und Wissenschaft</h5>
+              <h6 className="font-semibold mb-2">Wissenschaftliche Exzellenz durch mehrstufige Validierung</h6>
+              <p className="text-sm mb-3">Hochfrequente Umweltdaten unterliegen systematischen Fehlerquellen: Sensordrift, Übertragungsfehler, biologisches Fouling und meteorologische Störeinflüsse. Ohne rigorose Qualitätssicherung sind diese Daten für wissenschaftliche oder operative Anwendungen unbrauchbar.</p>
+              
+              <strong className="text-sm">Validierungsframework nach internationalen Standards:</strong>
+              <ul className="list-disc list-outside pl-5 mt-1 text-sm space-y-1">
+                <li><b>Level-0 → Level-1 Transformation:</b> Automatisierte Plausibilitätsprüfungen, Spike-Detection und Stuck-Value-Erkennung mittels robuster statistischer Verfahren (MAD-basierte Z-Scores).</li>
+                <li><b>Hierarchisches Flagging-System:</b> QARTOD-konforme Kennzeichnung ermöglicht parametrisierte Datennutzung je nach Anwendungsfall.</li>
+                <li><b>Traceability & FAIR-Compliance:</b> Vollständige Dokumentation aller QA/QC-Schritte für wissenschaftliche Reproduzierbarkeit und zur Erfüllung der FAIR-Prinzipien (Findable, Accessible, Interoperable, Reusable).</li>
+              </ul>
+              <p>&nbsp;</p>
+              <strong className="text-sm">Wissenschaftlicher Mehrwert:</strong>
+                  <ul className="list-disc list-outside pl-5 mt-1 text-sm space-y-1">
+                    <li><b>Publikationsfähigkeit:</b> Nur qualitätsgesicherte Datensätze erfüllen die Standards internationaler Fachzeitschriften.</li>
+                    <li><b>Vergleichbarkeit:</b> Standardisierte Validierung ermöglicht Meta-Analysen und überregionale Studien.</li>
+                    <li><b>FAIR-Compliance:</b> Erfüllung der Prinzipien (Findable, Accessible, Interoperable, Reusable) als Grundvoraussetzung für moderne Datenökosysteme.</li>
+                  </ul>
+            </div>
+
+            <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <h6 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Regionale Forschungsrelevanz</h6>
+              <p className="text-sm">DDie Mecklenburgische Seenplatte stellt ein einzigartiges limnologisches Laboratorium dar. Qualitätsgesicherte Langzeitmessreihen ermöglichen Klimawandelforschung, Eutrophierungsstudien und die Entwicklung prädiktiver Modelle für das Gewässermanagement. Ohne rigorose Datenvalidierung bleibt dieses wissenschaftliche Potenzial ungenutzt.</p>
+              <p>&nbsp;</p>
+              <p className="text-sm">Die Implementierung entspricht modernsten Ansätzen wie dem USGS TADA-Framework und europäischen INSPIRE-Richtlinien.</p>
+            </div>
+          </div>
+        ),
+      }
+      }]
+    },
     {
       id: 'dateneingabe',
       title: 'Datenaufnahme & Streaming',
@@ -1146,7 +1268,229 @@ async def get_observations(
           }
         }
       ]
-    }, // <--- Wichtig: Komma nach dem letzten vorherigen Block!
+    }, 
+    {
+      id: 'bpmn-prozess',
+      title: 'Detaillierter Prozessablauf (BPMN)',
+      icon: <Network className="w-6 h-6" />,
+      intro: {
+        experte: 'Eine formale Darstellung des End-to-End-Prozesses von der Datenerfassung bis zur Bereitstellung nach dem BPMN 2.0 Standard.',
+        verwaltung: 'Eine formale Darstellung des End-to-End-Prozesses von der Datenerfassung bis zur Bereitstellung nach dem BPMN 2.0 Standard.',
+        buerger: 'Ein detaillierter Blick auf alle Schritte, die unsere Daten durchlaufen.'
+      },
+      sections: [{
+        id: 'prozess-modell',
+        title: 'Prozessmodell',
+        content: {
+        experte: (
+          <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>Das BPMN-Modell (Business Process Model and Notation) zeigt den vollständigen Datenverarbeitungsprozess von den WAMO-Sensoren bis zur Open Data Plattform. Es umfasst:</p>
+            
+            <div>
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200">Hauptkomponenten:</h6>
+              <ul className="list-disc list-outside pl-5 mt-1 space-y-1">
+                <li><b>5 Verantwortungsbereiche (Lanes):</b> Sensoren, automatisierte Validierung, Expertenprüfung, Konsolidierung und ODP</li>
+                <li><b>Automatisierte Validierungsschritte:</b> Syntax-Check, Gross Range Check, Stuck Value Check, Spike Check</li>
+                <li><b>Qualitätssicherung:</b> Level 0 → Level 1 → Level 2 Transformation</li>
+                <li><b>Freigabeprozesse:</b> Automatisch und manuell durch Experten/Administration</li>
+              </ul>
+            </div>
+
+            <div>
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200">Wichtige Entscheidungspunkte:</h6>
+              <ul className="list-disc list-outside pl-5 mt-1 space-y-1">
+                <li>Syntax-Validierung nach Datenempfang</li>
+                <li>Qualitätsprüfung nach automatisierter Validierung</li>
+                <li>Expertenfreigabe für Level 2 Daten</li>
+                <li>Administrative Freigabe vor ODP-Upload</li>
+              </ul>
+            </div>
+
+            <div>
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200">Besonderheiten:</h6>
+              <ul className="list-disc list-outside pl-5 mt-1 space-y-1">
+                <li>Timer-Event für tägliche Konsolidierung um 24:00 Uhr</li>
+                <li>Fehlerbehandlung mit Korrekturschleifen</li>
+                <li>Datenspeicher für verschiedene Qualitätslevel</li>
+                <li>Rückkopplungen bei fehlgeschlagenen Prüfungen</li>
+              </ul>
+            </div>
+
+            <p className="pt-2 border-t dark:border-gray-700">
+              Das Modell entspricht den in den Begleitdokumenten beschriebenen Python-Validierungsschritten und zeigt die praktische Umsetzung des wissenschaftlichen Frameworks in einem operationellen Prozess.
+            </p>
+            {/* NEU: Die eingefügte Grafik */}
+            <div className="mt-4 pt-4 border-t dark:border-gray-700">
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Prozessvisualisierung</h6>
+              <button 
+                onClick={() => setModalImageUrl('/bpmn-prozess.png')}
+                className="w-full p-2 bg-white dark:bg-gray-200 rounded-lg transition-transform hover:scale-[1.02] cursor-pointer"
+              >
+                <img src="/bpmn-prozess.png" alt="BPMN Prozessablauf" className="w-full h-auto rounded" />
+              </button>
+              <p className="text-xs text-center mt-1 text-gray-500">Klicken zum Vergrößern</p>
+            </div>
+          </div>
+        ),
+        verwaltung: (
+          <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>Das BPMN-Modell (Business Process Model and Notation) zeigt den vollständigen Datenverarbeitungsprozess von den WAMO-Sensoren bis zur Open Data Plattform. Es umfasst:</p>
+            
+            <div>
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200">Hauptkomponenten:</h6>
+              <ul className="list-disc list-outside pl-5 mt-1 space-y-1">
+                <li><b>5 Verantwortungsbereiche (Lanes):</b> Sensoren, automatisierte Validierung, Expertenprüfung, Konsolidierung und ODP</li>
+                <li><b>Automatisierte Validierungsschritte:</b> Syntax-Check, Gross Range Check, Stuck Value Check, Spike Check</li>
+                <li><b>Qualitätssicherung:</b> Level 0 → Level 1 → Level 2 Transformation</li>
+                <li><b>Freigabeprozesse:</b> Automatisch und manuell durch Experten/Administration</li>
+              </ul>
+            </div>
+
+            <div>
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200">Wichtige Entscheidungspunkte:</h6>
+              <ul className="list-disc list-outside pl-5 mt-1 space-y-1">
+                <li>Syntax-Validierung nach Datenempfang</li>
+                <li>Qualitätsprüfung nach automatisierter Validierung</li>
+                <li>Expertenfreigabe für Level 2 Daten</li>
+                <li>Administrative Freigabe vor ODP-Upload</li>
+              </ul>
+            </div>
+            
+            <p className="pt-2 border-t dark:border-gray-700">
+              Das Modell entspricht den in den Begleitdokumenten beschriebenen Python-Validierungsschritten und zeigt die praktische Umsetzung des wissenschaftlichen Frameworks in einem operationellen Prozess.
+            </p>
+
+            {/* NEU: Die eingefügte Grafik */}
+            <div className="mt-4 pt-4 border-t dark:border-gray-700">
+              <h6 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Prozessvisualisierung</h6>
+              <button 
+                onClick={() => setModalImageUrl('/bpmn-prozess.png')}
+                className="w-full p-2 bg-white dark:bg-gray-200 rounded-lg transition-transform hover:scale-[1.02] cursor-pointer"
+              >
+                <img src="/bpmn-prozess.png" alt="BPMN Prozessablauf" className="w-full h-auto rounded" />
+              </button>
+              <p className="text-xs text-center mt-1 text-gray-500">Klicken zum Vergrößern</p>
+            </div>
+          </div>
+        ),
+        buerger: (
+        <div className="space-y-6 text-gray-700 dark:text-gray-300">
+          {/* IHR VOLLSTÄNDIGER TEXT */}
+          <div className="space-y-4">
+            <h5 className="font-bold text-lg text-gray-800 dark:text-gray-200">Der Weg Ihrer Wasserqualitätsdaten - einfach erklärt</h5>
+            <p className="text-sm">
+              Unsere acht schwimmenden Messstationen in den Seen des Landkreises sind wie kleine Laboratorien, die rund um die Uhr arbeiten. Aber wie wird aus einem technischen Messwert eine verlässliche Information, auf die Sie sich verlassen können?
+            </p>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <h6 className="font-semibold mb-2">🔍 Schritt 1: Sammeln und Prüfen</h6>
+              <p className="text-sm">Jede Stunde senden die Stationen automatisch ihre Messwerte an uns. Diese Rohdaten sind wie ungewaschenes Gemüse aus dem Garten - sie enthalten noch "Unreinheiten" und müssen erst aufbereitet werden.</p>
+              <p className="text-sm mt-2"><b>Was kann schiefgehen?</b></p>
+              <ul className="text-sm list-disc list-outside pl-5 mt-1">
+                <li>Ein Blatt schwimmt vor den Sensor → falsche Trübungswerte</li>
+                <li>Technischer Defekt → unrealistische Temperaturen von 50°C im Winter</li>
+                <li>Übertragungsfehler → unleserliche oder fehlende Daten</li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <h6 className="font-semibold mb-2">⚙️ Schritt 2: Automatische Qualitätsprüfung</h6>
+              <p className="text-sm">Unser Computer-System prüft jeden einzelnen Messwert automatisch:</p>
+              <ul className="text-sm list-disc list-outside pl-5 mt-1">
+                <li><b>Plausibilitätsprüfung:</b> Kann die Wassertemperatur in unserem See wirklich 45°C betragen?</li>
+                <li><b>Vergleich mit Nachbarwerten:</b> Springt ein Wert plötzlich von 15°C auf 30°C und wieder zurück?</li>
+                <li><b>Sensorfehler-Erkennung:</b> Meldet ein Sensor stundenlang exakt denselben Wert?</li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <h6 className="font-semibold mb-2">👨‍🔬 Schritt 3: Expertenprüfung</h6>
+              <p className="text-sm">Unsere Fachleute schauen sich auffällige Werte genau an. Sie wissen zum Beispiel:</p>
+              <ul className="text-sm list-disc list-outside pl-5 mt-1">
+                <li>Nach einem Gewitter können Trübungswerte natürlich ansteigen</li>
+                <li>In heißen Sommernächten kann der Sauerstoffgehalt tatsächlich kritisch werden</li>
+                <li>Bestimmte Werte müssen im Zusammenhang betrachtet werden</li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <h6 className="font-semibold mb-2">✅ Schritt 4: Finale Freigabe</h6>
+              <p className="text-sm">Erst wenn alle Prüfungen abgeschlossen sind, werden die Daten für Sie bereitgestellt. Sie erhalten dann:</p>
+              <ul className="text-sm list-disc list-outside pl-5 mt-1">
+                <li>Aktuelle Messwerte für Ihre Freizeitplanung</li>
+                <li>Verlässliche Warnungen bei Problemen</li>
+                <li>Transparente Informationen über die Datenqualität</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* DIE DAZUGEHÖRIGE GRAFIK */}
+          <div className="mt-4 pt-4 border-t dark:border-gray-700">
+            <button 
+              onClick={() => setModalImageUrl('/bpmn-prozess-buerger.png')}
+              className="w-full p-2 bg-white dark:bg-gray-200 rounded-lg transition-transform hover:scale-[1.02] cursor-pointer"
+            >
+              <img src="/bpmn-prozess-buerger.png" alt="Vereinfachter Prozessablauf" className="w-full h-auto rounded" />
+            </button>
+            <p className="text-xs text-center mt-1 text-gray-500">Klicken zum Vergrößern</p>
+          </div>
+
+          {/* DER NUTZEN */}
+          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg mt-6">
+            <h6 className="font-bold text-lg mb-2 text-green-800 dark:text-green-300">Was bedeutet das für Sie?</h6>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-start space-x-2"><span>🏊‍♀️</span><span><b>Sicher Baden:</b> Sie können sich darauf verlassen, dass Badeverbote nur ausgesprochen werden, wenn wirklich Gefahr besteht - nicht wegen eines Sensorfehlers.</span></li>
+              <li className="flex items-start space-x-2"><span>🎣</span><span><b>Bessere Planung:</b> Angeln, Segeln oder Schwimmen - Sie haben verlässliche Informationen für Ihre Freizeitaktivitäten.</span></li>
+              <li className="flex items-start space-x-2"><span>🏠</span><span><b>Werterhalt:</b> Saubere Gewässer steigern die Attraktivität und den Wert unserer Region.</span></li>
+              <li className="flex items-start space-x-2"><span>🔍</span><span><b>Transparenz:</b> Sie können jederzeit nachvollziehen, wie die Daten entstanden sind und wie verlässlich sie sind.</span></li>
+            </ul>
+            <p className="text-sm mt-3 font-semibold">Kurz gesagt: Wir behandeln Ihre Sicherheit und die Qualität der Informationen genauso sorgfältig, wie Sie es von uns erwarten würden.</p>
+          </div>
+        </div>
+      )
+      }
+      }]
+    },
+    // NEU: 3. Nutzen & Anwendungsfälle
+    {
+      id: 'nutzen-anwendungsfaelle',
+      title: 'Nutzen & Anwendungsfälle',
+      icon: <Sparkles className="w-6 h-6" />,
+      intro: {
+        experte: 'Konkrete Best-Practice-Beispiele und neue Ideen, wie die aufbereiteten Daten von verschiedenen Akteuren gewinnbringend genutzt werden können.',
+        verwaltung: 'Konkrete Best-Practice-Beispiele und neue Ideen, wie die aufbereiteten Daten von verschiedenen Akteuren gewinnbringend genutzt werden können.',
+        buerger: 'Was kann man mit diesen Daten eigentlich anfangen? Konkrete Beispiele für alle.'
+      },
+      sections: [{
+        id: 'use-cases',
+        title: 'Beispiele und Ideen',
+        content: {
+          experte: <p>Platzhalter: Visualisierte Steckbriefe für Anwendungsfälle wie "Algenblüten-Frühwarnung", "Nährstoff-Frachtberechnung" oder "Grundlage für KI-Modelle".</p>,
+          verwaltung: <p>Platzhalter: Visualisierte Steckbriefe für Anwendungsfälle wie "Algenblüten-Frühwarnung", "Nährstoff-Frachtberechnung" oder "Grundlage für KI-Modelle".</p>,
+          buerger: <p>Platzhalter: Visualisierte Steckbriefe für Anwendungsfälle wie "Algenblüten-Frühwarnung", "Nährstoff-Frachtberechnung" oder "Grundlage für KI-Modelle".</p>
+        }
+      }]
+    },
+     // NEU: 4. Code-Katalog
+    {
+      id: 'code-katalog',
+      title: 'Code-Katalog',
+      icon: <Code className="w-6 h-6" />,
+      intro: {
+        experte: 'Der vollständige, produktive Python-Code für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
+        verwaltung: 'Der vollständige, produktive Python-Code für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
+        buerger: 'Der offengelegte Programmcode, der für die Prüfung und Aufbereitung der Daten verwendet wird.'
+      },
+      sections: [{
+        id: 'code-collection',
+        title: 'Python-Skripte',
+        content: {
+          experte: <p>Platzhalter: Logisch unterteilter Code für die Bereiche Daten-Konnektor, Validierungs-Pipeline und Konsolidierungs-Funktionen.</p>,
+          verwaltung: <p>Platzhalter: Logisch unterteilter Code für die Bereiche Daten-Konnektor, Validierungs-Pipeline und Konsolidierungs-Funktionen.</p>,
+          buerger: <p>Platzhalter: Logisch unterteilter Code für die Bereiche Daten-Konnektor, Validierungs-Pipeline und Konsolidierungs-Funktionen.</p>
+        }
+      }]
+    },
     {
       id: 'kosten-nutzen-analyse',
       title: 'Kosten-Nutzen-Analyse',
@@ -1621,12 +1965,12 @@ async def get_observations(
             )}
 
             {/* NEUE GRAFIK FÜR KOSTEN-NUTZEN-ANALYSE HINZUFÜGEN */}
-            {filteredSteps[activeStep]?.id === 'kosten-nutzen-analyse' && (
-              <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Grafischer Vergleich der Optionen</h5>
-                <CostBenefitRadarChart />
-              </div>
-            )}
+          {filteredSteps[activeStep]?.id === 'kosten-nutzen-analyse' && (
+            <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+              <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Grafischer Vergleich der Optionen</h5>
+              <CostBenefitRadarChart />
+            </div>
+          )}
 
             {/* Sections */}
             <div className="space-y-4">
@@ -1757,6 +2101,7 @@ async def get_observations(
           </div>
         </main>
       </div>
+      <ImageModal imageUrl={modalImageUrl} onClose={() => setModalImageUrl(null)} />
     </div>
   );
 }
