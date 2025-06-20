@@ -1,25 +1,153 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb } from 'lucide-react';
+import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb, Wrench, Fish, School, FileText, Map, Siren } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 
 
-const useCases = [
-  {
-    id: 'tourism',
-    title: 'Prädiktiver Tourismus',
-    icon: Ship,
-    target: 'Tourismus, Kommunen, Bürger',
-    summary: 'KI-gestützte Vorhersage der Badewasserqualität zur Vermeidung unnötiger Seesperrungen und zum Schutz der öffentlichen Gesundheit.',
-    details: {
-      problem: 'Kurzfristige Algenblüten stellen ein Gesundheitsrisiko dar und führen oft zu pauschalen, langen Sperrungen, die wirtschaftlichen Schaden im Tourismus verursachen.',
-      solution: 'Durch die Kombination von Echtzeit-Sensordaten (Chlorophyll, Phycocyanin, etc.) mit externen Daten (Wettervorhersage) können KI-Modelle die Wahrscheinlichkeit einer Algenblüte 48-72 Stunden im Voraus berechnen.',
-      benefit: 'Ermöglicht proaktives Gewässermanagement und sichert die Einnahmen der Tourismuswirtschaft. Steigert die Attraktivität der Region durch verlässliche Informationen.',
-      example: 'Inspiriert von Systemen wie EOMAP (satellitengestützte Wasserqualitätsanalyse) und den Vorhersagemodellen des IGB (Leibniz-Institut für Gewässerökologie).'
+// Daten für die "Nutzen & Anwendungsfälle"-Karten und Modals
+// NEUE DATENSTRUKTUR für zielgruppenspezifische Anwendungsfälle
+const useCaseData = {
+    experte: [
+      // Die fehlerhafte Zeile "const useCases = [" wurde hier entfernt
+      {
+      id: 'tourism',
+      title: 'Prädiktiver Tourismus',
+      icon: Ship,
+      target: 'Tourismus, Kommunen, Bürger',
+      summary: 'KI-gestützte Vorhersage der Badewasserqualität zur Vermeidung unnötiger Seesperrungen und zum Schutz der öffentlichen Gesundheit.',
+      details: {
+        problem: 'Kurzfristige Algenblüten stellen ein Gesundheitsrisiko dar und führen oft zu pauschalen, langen Sperrungen, die wirtschaftlichen Schaden im Tourismus verursachen.',
+        solution: 'Durch die Kombination von Echtzeit-Sensordaten (Chlorophyll, Phycocyanin, etc.) mit externen Daten (Wettervorhersage) können KI-Modelle die Wahrscheinlichkeit einer Algenblüte 48-72 Stunden im Voraus berechnen.',
+        benefit: 'Ermöglicht proaktives Gewässermanagement, sichert Tourismuseinnahmen und steigert die Attraktivität der Region durch verlässliche Informationen.',
+        example: 'Die wirtschaftliche Bedeutung zeigt sich z.B. in Kalifornien, wo saubere Gewässer jährlich 14 Mrd. USD direkten Tourismusumsatz generieren.'
+      }
+    },
+    {
+      id: 'farming',
+      title: 'Smart Farming',
+      icon: Sprout,
+      target: 'Landwirte, Wasser- & Bodenverbände',
+      summary: 'Analyse von Nährstoffwerten in Gewässern zur Optimierung des Düngemitteleinsatzes und zur Reduzierung der Umweltbelastung.',
+      details: {
+        problem: 'Die Auswaschung von überschüssigem Dünger (Nitrat, Phosphat) aus der Landwirtschaft ist eine Hauptursache für die Eutrophierung von Seen.',
+        solution: 'Durch die Korrelation von Niederschlagsereignissen mit den Echtzeit-Nährstoffdaten aus den Seen können Landwirte den optimalen Zeitpunkt und die optimale Menge für die Düngung bestimmen.',
+        benefit: 'Reduziert signifikant die Kosten für Düngemittel und schützt die Gewässer vor Nährstoffeinträgen. Stärkt die Position der Landwirte als verantwortungsvolle Umweltpartner.',
+        example: 'Start-ups wie "Kilimo" beweisen das enorme Effizienzpotenzial datengestützter Landwirtschaft.'
+      }
+    },
+    {
+      id: 'innovation',
+      title: 'Innovations-Ökosystem',
+      icon: Lightbulb,
+      target: 'Unternehmen, Start-ups, IT-Dienstleister',
+      summary: 'Eine offene, standardisierte Daten-API als Katalysator für die lokale Digitalwirtschaft und die Gründung neuer Unternehmen.',
+      details: {
+        problem: 'Für die Entwicklung neuer digitaler Produkte fehlt es Gründern oft am Zugang zu qualitativ hochwertigen, standardisierten Umweltdaten.',
+        solution: 'Die Bereitstellung der Daten über eine OGC SensorThings API senkt die Eintrittsbarriere für die Entwicklung neuer Apps und Dienstleistungen (z.B. für Angler, Aquakulturen, Beratungsleistungen).',
+        benefit: 'Fördert die Entstehung eines sozio-technischen Ökosystems aus Kommunen, Industrie und Wissenschaft, was die lokale Wirtschaft stärkt und Arbeitsplätze schafft.',
+        example: 'Das deutsche Leuchtturmprojekt "KOMMUNAL 4.0" demonstriert erfolgreich, wie solche Plattformen die regionale Wirtschaft beleben.'
+      }
+    },
+    {
+      id: 'infrastructure',
+      title: 'Intelligente Infrastruktur',
+      icon: Wrench,
+      target: 'Wasserversorger, Kommunen',
+      summary: 'Echtzeit-Analyse von Druck- und Durchflussdaten zur frühzeitigen Erkennung von Leckagen und zur effizienten Netzsteuerung.',
+      details: {
+          problem: 'Wasserverluste durch unentdeckte Leckagen in alternden Rohrnetzen sind ein erheblicher Kostenfaktor für Wasserversorger.',
+          solution: 'Anomalieerkennungs-Algorithmen können auf die Zeitreihendaten angewendet werden, um atypische Muster zu identifizieren, die auf Lecks oder Rohrbrüche hindeuten.',
+          benefit: 'Reduziert teure Wasserverluste, spart Energie für Pumpen und erhöht die Stabilität und Sicherheit der Versorgungsinfrastruktur.',
+          example: 'Das EU-Projekt "Digital Water City" hat solche Smart-Water-Grid-Lösungen erfolgreich in europäischen Metropolen pilotiert.'
+      }
+    },
+    {
+      id: 'conservation',
+      title: 'Artenschutz & Gewässer-Gesundheit',
+      icon: Fish,
+      target: 'Umweltverbände, Fischereivereine, Behörden',
+      summary: 'Präzise Identifikation von ökologischen Stresszonen für Fische und andere Wasserlebewesen durch hochaufgelöste Daten.',
+      details: {
+        problem: 'Sauerstoffmangel (Hypoxie) oder thermischer Stress sind oft unsichtbar, aber tödlich für die aquatische Fauna.',
+        solution: 'Die kontinuierliche Überwachung von Sauerstoff und Temperatur in verschiedenen Tiefen ermöglicht die Erstellung von detaillierten Risikokarten für aquatische Lebensräume.',
+        benefit: 'Ermöglicht die Einleitung gezielter Gegenmaßnahmen (z.B. Belüftung bei Hypoxie, Anlegen von Schattenzonen bei Hitzestress) und liefert eine wissenschaftliche Grundlage für Renaturierungsprojekte.',
+        example: 'Die Methoden des IGB und des LTER-Netzwerks zeigen, wie Langzeitdaten zum Schutz der Biodiversität beitragen.'
+      }
+    },
+    {
+      id: 'education',
+      title: 'Bildung & Bürgerbeteiligung',
+      icon: School,
+      target: 'Schulen, Universitäten, Bürger',
+      summary: 'Die offene Datenplattform als interaktives Lehrmittel zur Förderung von Umweltbewusstsein und "Data Literacy".',
+      details: {
+        problem: 'Komplexe ökologische Zusammenhänge sind oft abstrakt und schwer zu vermitteln.',
+        solution: 'Die Visualisierungs-Plattform macht Daten lebendig und zugänglich. Schüler können eigene Analysen durchführen, und es können Citizen-Science-Projekte initiiert werden.',
+        benefit: 'Schafft Transparenz, fördert die digitale und ökologische Bildung und stärkt die Identifikation der Bürger mit den lokalen Naturschätzen.',
+        example: 'Projekte wie "Water RANGERS" zeigen, wie Bürger erfolgreich in die Gewässerüberwachung eingebunden werden können.'
+      }
     }
-  },
-  // Hier können Sie später weitere Objekte für neue Anwendungsfälle hinzufügen
-];
+  ],
+  verwaltung: [
+    {
+      id: 'tourism', // Wir verwenden dieselbe ID, da es der gleiche Anwendungsfall ist
+      title: 'Frühwarnsystem für Badegewässer',
+      icon: Ship,
+      target: 'Bürger, Tourismus, Gesundheitsämter',
+      summary: 'Proaktive Erkennung von Algenblüten (Cyanobakterien), um die Bevölkerung rechtzeitig zu informieren und die Nutzung der Seen sicher zu steuern.',
+      details: {
+        problem: 'Kurzfristige, toxische Blaualgenblüten stellen ein Gesundheitsrisiko dar. Fehlende oder späte Warnungen gefährden Badegäste, während pauschale Sperrungen den Tourismus unnötig schädigen.',
+        solution: 'Durch die Echtzeit-Analyse von Sensor-Proxies (Chlorophyll, Phycocyanin) in Kombination mit Wetterdaten können KI-Modelle das Risiko einer Algenblüte 48-72 Stunden im Voraus prognostizieren.',
+        benefit: 'Ermöglicht eine gezielte und rechtzeitige Information der Bevölkerung über offizielle Kanäle. Badeverbote werden nur bei tatsächlicher Notwendigkeit ausgesprochen, was die Sicherheit erhöht und die Akzeptanz von Maßnahmen steigert.',
+        example: 'Die Kombination von Sensorik und Modellierung, wie vom IGB (Leibniz-Institut für Gewässerökologie) erforscht, bildet die Grundlage für solche modernen Warnsysteme.'
+      }
+    },
+    {
+      id: 'reporting',
+      title: 'Automatisierte Berichtserstellung & EU-Compliance',
+      icon: FileText,
+      target: 'Wasserbehörden, Landesämter',
+      summary: 'Effiziente Erfüllung von Berichtspflichten durch automatische, standardkonforme Datenaggregation.',
+      details: {
+        problem: 'Die manuelle Erstellung von Berichten für die EU-Wasserrahmenrichtlinie (WRRL) und nationale Verordnungen ist zeitaufwändig und fehleranfällig.',
+        solution: 'Das System aggregiert qualitätsgeflaggte Daten automatisch in die geforderten Formate und stellt sie als standardisierte Exporte bereit.',
+        benefit: 'Massive Zeitersparnis, Erhöhung der Rechtssicherheit durch lückenlose Dokumentation und Sicherstellung der INSPIRE-Konformität.',
+        example: 'Orientiert an den etablierten Berichtswegen des europäischen WISE-Systems und den Datenstandards des UBA.'
+      }
+    },
+    {
+      id: 'planning',
+      title: 'Datengestützte Raum- & Infrastrukturplanung',
+      icon: Map,
+      target: 'Bau- & Planungsämter, Wirtschaftsförderung',
+      summary: 'Nutzung von Langzeit-Datenreihen als objektive Grundlage für Planungs- und Genehmigungsverfahren.',
+      details: {
+        problem: 'Planungsentscheidungen für Bauprojekte oder Infrastruktur in Gewässernähe basieren oft auf veralteten oder unvollständigen Daten.',
+        solution: 'Die hochaufgelösten Daten zu Wasserständen, Trübung und ökologischem Status liefern eine solide, wissenschaftliche Basis zur Bewertung von Umweltauswirkungen.',
+        benefit: 'Vermeidet teure Planungsfehler, beschleunigt Genehmigungsverfahren und ermöglicht eine nachweislich nachhaltige Regionalentwicklung.',
+        example: 'Ein Kernaspekt von "Smart City"-Konzepten, wie sie im EU-Projekt "Digital Water City" erprobt werden.'
+      }
+    },
+    {
+      id: 'crisis-management',
+      title: 'Effizientes Havarie- & Krisenmanagement',
+      icon: Siren,
+      target: 'Katastrophenschutz, Umweltamt, Feuerwehren',
+      summary: 'Einsatz des Echtzeit-Sensornetzwerks zur Verfolgung von Schadstofffahnen und zur Beweissicherung bei Störfällen.',
+      details: {
+        problem: 'Bei einem Störfall (z.B. Chemieunfall) ist eine schnelle Lageerfassung entscheidend, um die Ausbreitung zu begrenzen und die Bevölkerung zu schützen.',
+        solution: 'Das Sensornetzwerk kann die Ausbreitung einer Schadstofffahne in Echtzeit verfolgen und liefert ein objektives, gerichtsverwertbares Protokoll des Ereignisses.',
+        benefit: 'Ermöglicht eine schnelle Reaktion der Einsatzkräfte, schützt Trinkwasserressourcen und liefert eine lückenlose Beweiskette für Haftungsfragen.',
+        example: 'Die Vernetzung von Wasserbetrieben, wie bei KOMMUNAL 4.0 angestrebt, ist die Basis für ein solches Schutzsystem.'
+      }
+    }
+  ],
+  buerger: [ // Die Bürgeransicht bleibt vereinfacht
+      { id: 'tourism', title: 'Für Tourismus & Freizeit', icon: Ship, summary: 'Bessere Vorhersagen von Algenblüten können unnötige Sperrungen von Badeseen vermeiden. Das bedeutet mehr sicheren Badespaß für Sie und verlässlichere Einnahmen für Hotels und Gaststätten.' },
+      { id: 'farming', title: 'Für Umwelt & Landwirtschaft', icon: Sprout, summary: 'Landwirte können ihre Felder gezielter bewässern und düngen. Das spart nicht nur Wasser, sondern schützt auch unsere Seen vor überschüssigen Nährstoffen.' },
+      { id: 'innovation', title: 'Für unsere Region', icon: Lightbulb, summary: 'Unternehmen und Tüftler aus der Region können diese öffentlichen Daten nutzen, um neue Apps und Dienstleistungen zu entwickeln. Das schafft Arbeitsplätze und fördert die lokale Wirtschaft.' }
+  ]
+};
 
 
 // Beispieldaten basierend auf Useriner-See_2025-04-28.csv
@@ -1533,61 +1661,60 @@ async def get_observations(
         id: 'use-cases',
         title: 'Beispiele und Ideen',
         content: {
-          experte: (
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert für Kommunen und Unternehmen. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
-              </p>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {useCases.map(useCase => (
-                  <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
-                      <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
-                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ),
-          verwaltung: (
-            // Verwaltung bekommt dieselbe Ansicht wie Experte
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert für Kommunen und Unternehmen. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
-              </p>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {useCases.map(useCase => (
-                  <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
-                      <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
-                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ),
-          buerger: (
-            <div className="space-y-4">
-              {useCases.map(useCase => (
-                <div key={useCase.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" /></div>
-                    <h6 className="font-semibold">{useCase.title}</h6>
+        experte: (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {useCaseData.experte.map(useCase => (
+                <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-purple-100 dark:bg-purple-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-purple-600 dark:text-purple-400" /></div>
+                    <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{useCase.summary}</p>
-                </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
+                </button>
               ))}
             </div>
-          )
-        }
+          </div>
+        ),
+        verwaltung: (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Neben dem allgemeinen Potenzial sind für die Verwaltung vor allem Anwendungsfälle relevant, die direkt bei der Erfüllung hoheitlicher Aufgaben, der Effizienzsteigerung und der Risikominimierung unterstützen.
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {useCaseData.verwaltung.map(useCase => (
+                <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
+                    <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ),
+        buerger: (
+          <div className="space-y-4">
+            {useCaseData.buerger.map(useCase => (
+              <div key={useCase.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-lg"><useCase.icon className="w-5 h-5 text-green-600 dark:text-green-400" /></div>
+                  <h6 className="font-semibold">{useCase.title}</h6>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{useCase.summary}</p>
+              </div>
+            ))}
+          </div>
+        )
+      }
       }]
     },
      // NEU: 4. Code-Katalog
