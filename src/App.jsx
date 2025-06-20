@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb, Wrench, Fish, School, FileText, Map, Siren } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
-
+import bpmnProzessExperte from './assets/bpmn-prozess.png';
+import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
 
 
 // Daten für die "Nutzen & Anwendungsfälle"-Karten und Modals
@@ -1519,10 +1520,10 @@ async def get_observations(
             <div className="mt-4 pt-4 border-t dark:border-gray-700">
               <h6 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Prozessvisualisierung</h6>
               <button 
-                onClick={() => setModalImageUrl('/bpmn-prozess.png')}
+                onClick={() => setModalImageUrl(bpmnProzessExperte)}
                 className="w-full p-2 bg-white dark:bg-gray-200 rounded-lg transition-transform hover:scale-[1.02] cursor-pointer"
               >
-                <img src="/bpmn-prozess.png" alt="BPMN Prozessablauf" className="w-full h-auto rounded" />
+                <img src={bpmnProzessExperte} alt="BPMN Prozessablauf" className="w-full h-auto rounded" />
               </button>
               <p className="text-xs text-center mt-1 text-gray-500">Klicken zum Vergrößern</p>
             </div>
@@ -1623,10 +1624,10 @@ async def get_observations(
           {/* DIE DAZUGEHÖRIGE GRAFIK */}
           <div className="mt-4 pt-4 border-t dark:border-gray-700">
             <button 
-              onClick={() => setModalImageUrl('/bpmn-prozess-buerger.png')}
+              onClick={() => setModalImageUrl(bpmnProzessBuerger)}
               className="w-full p-2 bg-white dark:bg-gray-200 rounded-lg transition-transform hover:scale-[1.02] cursor-pointer"
             >
-              <img src="/bpmn-prozess-buerger.png" alt="Vereinfachter Prozessablauf" className="w-full h-auto rounded" />
+              <img src={bpmnProzessBuerger} alt="Vereinfachter Prozessablauf" className="w-full h-auto rounded" />
             </button>
             <p className="text-xs text-center mt-1 text-gray-500">Klicken zum Vergrößern</p>
           </div>
