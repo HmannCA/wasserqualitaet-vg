@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 // Beispieldaten basierend auf Useriner-See_2025-04-28.csv
 const dailyChartData = [
@@ -224,6 +224,40 @@ const QualityFlagChart = () => (
         />
         <Legend />
       </PieChart>
+    </ResponsiveContainer>
+  </div>
+);
+
+// Daten für das Radar-Diagramm (Kosten-Nutzen-Analyse)
+// Skala von 1 (schlecht) bis 10 (sehr gut)
+const radarChartData = [
+  { subject: 'Geringe Kosten', A: 9, B: 2, fullMark: 10 },
+  { subject: 'Hohe Flexibilität', A: 10, B: 4, fullMark: 10 },
+  { subject: 'Wissensaufbau', A: 10, B: 3, fullMark: 10 },
+  // Berücksichtigt Ihre Anmerkung: Die Eigenentwicklung ist durch Wegfall der Bürokratie schneller.
+  { subject: 'Schnelle Inbetriebnahme', A: 7, B: 3, fullMark: 10 }, 
+  { subject: 'Geringe Wartung', A: 6, B: 8, fullMark: 10 },
+];
+
+// Eigene Komponente für das Radar-Diagramm
+const CostBenefitRadarChart = () => (
+  <div className="w-full h-80 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+    <ResponsiveContainer>
+      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarChartData}>
+        <PolarGrid />
+        <PolarAngleAxis dataKey="subject" tick={{ fill: 'currentColor', fontSize: 12 }} />
+        <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
+        <Radar name="Eigenentwicklung" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+        <Radar name="Softwarekauf" dataKey="B" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} />
+        <Legend />
+        <Tooltip 
+           contentStyle={{ 
+            backgroundColor: 'rgba(31, 41, 55, 0.8)', 
+            borderColor: '#4b5563',
+            borderRadius: '0.5rem'
+          }}
+        />
+      </RadarChart>
     </ResponsiveContainer>
   </div>
 );
@@ -1186,12 +1220,13 @@ async def get_observations(
                     
                     <h5 className="font-semibold text-green-600 dark:text-green-500">Vorteile:</h5>
                     <ul className="list-disc list-outside pl-5 text-sm space-y-1 mt-1">
-                      <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist sofort verfügbar.</li>
+                      <li><b>Schnellere Inbetriebnahme:</b> Die Grundfunktionalität ist, nach Beschaffung und Einrichtung sofort verfügbar.</li>
                       <li><b>Hersteller-Support:</b> Unterstützung und Wartung durch den Anbieter.</li>
                       <li><b>Bewährte Lösung:</b> Oft im Markt etabliert und getestet.</li>
                     </ul>
                     <h5 className="font-semibold text-red-600 dark:text-red-500 mt-4">Nachteile:</h5>
                     <ul className="list-disc llist-outside pl-5 text-sm space-y-1 mt-1">
+                      <li><b>Länger andauernder Beschaffungsprozess:</b> Bei der Betrachtung des Zeitaufwandes müssen die Dauer der Anbieterauswahl, der interne Freigabe-Workflow, ggf. zu beachtende Ausschreibungsfristen, Bereitstellungzeitraum sowie Schulungaufwände mit in Betracht gezogen werden.</li>
                       <li><b>Hohe und wiederkehrende Kosten:</b> Lizenz- und Wartungsgebühren.</li>
                       <li><b>Geringere Flexibilität:</b> "Vendor-Lock-in", Anpassungen sind oft teuer oder unmöglich.</li>
                       <li><b>Blackbox-Effekt:</b> Die interne Funktionsweise ist oft nicht transparent.</li>
@@ -1582,6 +1617,14 @@ async def get_observations(
               <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
                 <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Beispiel: Verteilung der Qualitäts-Flags</h5>
                 <QualityFlagChart />
+              </div>
+            )}
+
+            {/* NEUE GRAFIK FÜR KOSTEN-NUTZEN-ANALYSE HINZUFÜGEN */}
+            {filteredSteps[activeStep]?.id === 'kosten-nutzen-analyse' && (
+              <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Grafischer Vergleich der Optionen</h5>
+                <CostBenefitRadarChart />
               </div>
             )}
 
