@@ -36,3 +36,17 @@
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* HIER DIE NEUE KLASSE HINZUFÜGEN */
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-in-out;
+}

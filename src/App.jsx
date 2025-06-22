@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, ChevronLeft, Users, LayoutTemplate, Beaker, 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import bpmnProzessExperte from './assets/bpmn-prozess.png';
 import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
+import AppShowcaseComponent from './components/AppShowcaseComponent';
 
 // Komponente für das interaktive Einführungs-Carousel
 // Komponente für das interaktive Einführungs-Carousel
@@ -2433,20 +2434,20 @@ async def get_observations(
   {
     id: 'anwendungs-showcase',
     title: 'Anwendungs-Showcase: Die Daten in Aktion',
-    icon: LayoutTemplate,
+    icon: <LayoutTemplate className="w-6 h-6" />,
     intro: {
-      experte: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden interaktiven Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert schaffen.',
-      verwaltung: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden interaktiven Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert schaffen.',
-      buerger: 'Was passiert eigentlich mit all den Daten? Hier sehen Sie an konkreten Beispielen, wie aus den Messungen nützliche Apps für den Alltag und die Verwaltung entstehen können.'
+      experte: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden.',
+      verwaltung: 'Die folgenden Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert für die Verwaltung, Bürger und Interessengruppen schaffen.',
+      buerger: 'Was passiert eigentlich mit all den Daten? Hier sehen Sie an Beispielen, wie aus den Messungen nützliche Apps für den Alltag und die Verwaltung entstehen können.'
     },
     sections: [
       {
         id: 'app-prototypes',
-        title: 'Interaktive Prototypen',
+        title: 'Interaktive App-Prototypen',
         content: {
-          experte: ( <AppShowcaseComponent /> ),
-          verwaltung: ( <AppShowcaseComponent /> ),
-          buerger: ( <AppShowcaseComponent /> )
+          experte: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> ),
+          verwaltung: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> ),
+          buerger: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> )
         }
       }
     ]
@@ -2721,6 +2722,46 @@ async def get_observations(
               </div>
             </div>
 
+            <div className="flex items-center justify-between mb-8">
+              <button
+                onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
+                disabled={activeStep === 0}
+                className={`px-4 py-2 rounded-md flex items-center space-x-2 ${
+                  activeStep === 0 
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' 
+                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Vorheriger Schritt</span>
+              </button>
+              
+              <div className="flex space-x-2">
+                {filteredSteps.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveStep(idx)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      idx === activeStep ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              <button
+                onClick={() => setActiveStep(Math.min(filteredSteps.length - 1, activeStep + 1))}
+                disabled={activeStep === filteredSteps.length - 1}
+                className={`px-4 py-2 rounded-md flex items-center space-x-2 ${
+                  activeStep === filteredSteps.length - 1 
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                <span>Nächster Schritt</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
             {/* HIER DIE GRAFIK AN NEUER STELLE EINFÜGEN */}
             {filteredSteps[activeStep]?.id === 'dateneingabe' && (
               <div className="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
@@ -2846,46 +2887,7 @@ async def get_observations(
               })}
             </div>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-8">
-              <button
-                onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
-                disabled={activeStep === 0}
-                className={`px-4 py-2 rounded-md flex items-center space-x-2 ${
-                  activeStep === 0 
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' 
-                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
-                }`}
-              >
-                <ChevronRight className="w-4 h-4 rotate-180" />
-                <span>Vorheriger Schritt</span>
-              </button>
-              
-              <div className="flex space-x-2">
-                {filteredSteps.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveStep(idx)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      idx === activeStep ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-                    }`}
-                  />
-                ))}
-              </div>
-              
-              <button
-                onClick={() => setActiveStep(Math.min(filteredSteps.length - 1, activeStep + 1))}
-                disabled={activeStep === filteredSteps.length - 1}
-                className={`px-4 py-2 rounded-md flex items-center space-x-2 ${
-                  activeStep === filteredSteps.length - 1 
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' 
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                <span>Nächster Schritt</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
+            
           </div>
         </main>
       </div>
