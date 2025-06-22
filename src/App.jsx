@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, ChevronLeft, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb, Wrench, Fish, School, FileText, Map, Siren, Building, Briefcase, FlaskConical, Layers, Orbit } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronLeft, Users, LayoutTemplate, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb, Wrench, Fish, School, FileText, Map, Siren, Building, Briefcase, FlaskConical, Layers, Orbit } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import bpmnProzessExperte from './assets/bpmn-prozess.png';
 import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
@@ -272,15 +272,15 @@ const useCaseData = {
     },
     {
       id: 'crisis-management',
-      title: 'Effizientes Havarie- & Krisenmanagement',
+      title: 'Echtzeit-Detektion von Schadstoffeinträgen',
       icon: Siren,
-      target: 'Katastrophenschutz, Umweltamt, Feuerwehren',
-      summary: 'Einsatz des Echtzeit-Sensornetzwerks zur Verfolgung von Schadstofffahnen und zur Beweissicherung bei Störfällen.',
+      target: 'Wasserbehörde, Katastrophenschutz, Kommunen',
+      summary: 'Überwacht kontinuierlich die Wasserqualität auf abrupte, unnatürliche Veränderungen, um die Einleitung von Schadstoffen durch Unfälle im Uferbereich sofort zu erkennen.',
       details: {
-        problem: 'Bei einem Störfall (z.B. Chemieunfall) ist eine schnelle Lageerfassung entscheidend, um die Ausbreitung zu begrenzen und die Bevölkerung zu schützen.',
-        solution: 'Das Sensornetzwerk kann die Ausbreitung einer Schadstofffahne in Echtzeit verfolgen und liefert ein objektives, gerichtsverwertbares Protokoll des Ereignisses.',
-        benefit: 'Ermöglicht eine schnelle Reaktion der Einsatzkräfte, schützt Trinkwasserressourcen und liefert eine lückenlose Beweiskette für Haftungsfragen.',
-        example: 'Die Vernetzung von Wasserbetrieben, wie bei KOMMUNAL 4.0 angestrebt, ist die Basis für ein solches Schutzsystem.'
+        problem: 'Bei Unfällen im Uferbereich (z.B. Rohrbrüche, Gülleaustritt, LKW-Unfall) können Schadstoffe unbemerkt in den See gelangen und schwere ökologische Schäden verursachen, bevor sie entdeckt werden.',
+        solution: 'Die hochfrequenten Sensoren agieren als "digitale Wachposten". Die Anomalieerkennung ist darauf trainiert, plötzliche, untypische Veränderungen (z.B. Sprünge bei Trübung, pH-Wert, Leitfähigkeit) zu erkennen, die auf einen Schadstoffeintrag hindeuten, und löst einen sofortigen Alarm aus.',
+        benefit: 'Verkürzt die Reaktionszeit von Tagen oder Stunden auf Minuten. Behörden können den Schaden sofort eindämmen, die Quelle identifizieren und Gegenmaßnahmen einleiten, was den ökologischen Schaden und die Folgekosten massiv reduziert.',
+        example: 'Ähnliche Echtzeit-Monitoringsysteme werden erfolgreich zur Überwachung von Flüssen unterhalb von Industrieanlagen eingesetzt, um unzulässige Einleitungen sofort aufzudecken.'
       }
     }
   ],
@@ -2426,6 +2426,27 @@ async def get_observations(
               <p className="text-sm">Bei der Entwicklung einer solchen Plattform stellt sich immer die Frage: Baut man die Software selbst oder kauft man eine fertige Lösung? Für dieses Projekt wurde entschieden, die Software selbst zu entwickeln. Das ist langfristig günstiger, flexibler und das Wissen darüber, wie alles funktioniert, bleibt hier bei uns im Landkreis.</p>
             </div>
           )
+        }
+      }
+    ]
+  },
+  {
+    id: 'anwendungs-showcase',
+    title: 'Anwendungs-Showcase: Die Daten in Aktion',
+    icon: LayoutTemplate,
+    intro: {
+      experte: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden interaktiven Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert schaffen.',
+      verwaltung: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden interaktiven Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert schaffen.',
+      buerger: 'Was passiert eigentlich mit all den Daten? Hier sehen Sie an konkreten Beispielen, wie aus den Messungen nützliche Apps für den Alltag und die Verwaltung entstehen können.'
+    },
+    sections: [
+      {
+        id: 'app-prototypes',
+        title: 'Interaktive Prototypen',
+        content: {
+          experte: ( <AppShowcaseComponent /> ),
+          verwaltung: ( <AppShowcaseComponent /> ),
+          buerger: ( <AppShowcaseComponent /> )
         }
       }
     ]
