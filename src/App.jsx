@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb, Wrench, Fish, School, FileText, Map, Siren, Building, Briefcase, FlaskConical } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronLeft, Users, Beaker, Building2, MessageSquare, Send, User, Calendar, ThumbsUp, Filter, Droplets, Activity, Database, Shield, Cloud, BarChart3, Info, CheckCircle2, AlertCircle, X, Menu, Sun, Moon, ClipboardList, Scale, BookCopy, Zap, Network, Sparkles, Code, NetworkIcon, Ship, Sprout, Lightbulb, Wrench, Fish, School, FileText, Map, Siren, Building, Briefcase, FlaskConical, Layers, Orbit } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, ComposedChart, Area, ReferenceLine, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import bpmnProzessExperte from './assets/bpmn-prozess.png';
 import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
@@ -191,16 +191,16 @@ const useCaseData = {
       }
     },
     {
-      id: 'infrastructure',
-      title: 'Intelligente Infrastruktur',
-      icon: Wrench,
-      target: 'Wasserversorger, Kommunen',
-      summary: 'Echtzeit-Analyse von Druck- und Durchflussdaten zur frühzeitigen Erkennung von Leckagen und zur effizienten Netzsteuerung.',
+      id: 'digital-twin',
+      title: 'Digitale Zwillinge und Ökosystem-Simulation',
+      icon: Orbit, // Oder Orbit, je nachdem was Sie importiert haben
+      target: 'Wissenschaft, Forschungsinstitute, Wasserbauingenieure',
+      summary: 'Ein lebendiges 4D-Modell des Sees, das durch Echtzeit-Sensordaten gespeist wird und als virtuelles Labor für Simulationen und Analysen dient.',
       details: {
-          problem: 'Wasserverluste durch unentdeckte Leckagen in alternden Rohrnetzen sind ein erheblicher Kostenfaktor für Wasserversorger.',
-          solution: 'Anomalieerkennungs-Algorithmen können auf die Zeitreihendaten angewendet werden, um atypische Muster zu identifizieren, die auf Lecks oder Rohrbrüche hindeuten.',
-          benefit: 'Reduziert teure Wasserverluste, spart Energie für Pumpen und erhöht die Stabilität und Sicherheit der Versorgungsinfrastruktur.',
-          example: 'Das EU-Projekt "Digital Water City" hat solche Smart-Water-Grid-Lösungen erfolgreich in europäischen Metropolen pilotiert.'
+        problem: 'Statische Modelle und seltene, punktuelle Messungen können die hochdynamischen und räumlich komplexen Prozesse in einem See (z.B. die Ausbildung von thermischen Schichtungen, Nährstoff-Hotspots, Strömungen) nur unzureichend abbilden. Für präzise Forschung und Management fehlen oft lebendige, datengestützte Gesamtbilder des Ökosystems.',
+        solution: 'Der kontinuierliche, qualitätsgesicherte Datenstrom der mobilen Sensorflotte wird genutzt, um ein dynamisches 4D-Modell (3D-Raum + Zeit) des Sees zu füttern – einen "Digitalen Zwilling". Dieses virtuelle Abbild des realen Gewässers wird in Quasi-Echtzeit durch die Messdaten kalibriert und aktualisiert. Es dient als virtuelles Labor, in dem komplexe Zusammenhänge visualisiert und Szenarien durchgespielt werden können.',
+        benefit: 'Ermöglicht die Simulation von Extremszenarien (z.B. Hitzewellen), die Visualisierung komplexer Prozesse, die Optimierung von Sanierungsmaßnahmen vor deren Umsetzung und die risikofreie Überprüfung wissenschaftlicher Hypothesen.',
+        example: 'Das Projekt folgt der Vision des "Digital Twin of the Ocean" (DITTO) Programms der Vereinten Nationen, das darauf abzielt, durch die Fusion von Sensordaten und Modellen ein interaktives, digitales Abbild globaler Gewässer zu schaffen.'
       }
     },
     {
@@ -626,6 +626,7 @@ const UseCaseModal = ({ useCase, onClose }) => {
 };
 
 // Komponente für das Einführungs-Modal
+
 const IntroModal = ({ show, onClose }) => {
   const [step, setStep] = useState(1);
 
@@ -644,17 +645,16 @@ const IntroModal = ({ show, onClose }) => {
           {step === 1 && (
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><Zap className="w-6 h-6 text-blue-500" /></div>
-                <h3 className="text-xl font-bold">Von Rohdaten zu wertvoller Information</h3>
+                <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><Sparkles className="w-6 h-6 text-blue-500" /></div>
+                <h3 className="text-xl font-bold">Willkommen! Der Nutzen für unsere Region</h3>
               </div>
-              <p className="text-sm mb-3">Willkommen auf der Plattform zur Aufbereitung von Wasserqualitätsdaten des Landkreises Vorpommern-Greifswald!</p>
-              <p className="text-sm">Haben Sie sich je gefragt, wie aus einer einzelnen Messung im See eine verlässliche Information wird, die für den Badespaß, die Landwirtschaft oder die Wissenschaft genutzt werden kann? Diese Seite zeigt Ihnen den gesamten Weg – von der rohen Sensormessung bis zum qualitätsgesicherten, offenen Datensatz.</p>
-              <h4 className="font-semibold mt-4 mb-2">Warum dieser Aufwand?</h4>
-              <ul className="list-disc list-outside pl-5 text-sm space-y-1">
-                <li><b>Für Sie als Bürger:</b> Wir schaffen Vertrauen und liefern verlässliche Daten für Ihre Gesundheit und Freizeit.</li>
-                <li><b>Für unsere Verwaltung:</b> Wir sichern Entscheidungen rechtlich ab und arbeiten effizienter.</li>
-                <li><b>Für die Wissenschaft:</b> Wir eröffnen neue Forschungsmöglichkeiten zum Schutz unserer einzigartigen Seenlandschaft.</li>
-              </ul>
+              <p className="text-sm mb-4">
+                Entdecken Sie, warum die Aufbereitung von Wasserqualitätsdaten eine strategische Investition für den Landkreis, die regionale Wirtschaft und die Forschung ist.
+              </p>
+              
+              {/* HIER IST DIE KORREKTUR: Das Motivations-Karussell wird direkt eingebunden. */}
+              <MotivationCarousel />
+              
             </div>
           )}
           {step === 2 && (
@@ -2570,8 +2570,9 @@ async def get_observations(
             <div className="flex items-center space-x-4">
 
               {/* NEUER INFO-BUTTON */}
+              
               <button
-                onClick={() => { localStorage.removeItem('hasSeenIntroModal'); setShowIntroModal(true); }}
+                onClick={() => setShowIntroModal(true)}
                 className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 title="Einführung anzeigen"
               >
