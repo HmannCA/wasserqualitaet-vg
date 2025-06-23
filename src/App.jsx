@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import bpmnProzessExperte from './assets/bpmn-prozess.png';
 import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
 import AppShowcaseComponent from './components/AppShowcaseComponent';
+import HeroSection from './components/HeroSection';
 
 // Komponente für das interaktive Einführungs-Carousel
 // Komponente für das interaktive Einführungs-Carousel
@@ -150,7 +151,7 @@ const explanations = {
 // Daten für die "Nutzen & Anwendungsfälle"-Karten und Modals
 // NEUE DATENSTRUKTUR für zielgruppenspezifische Anwendungsfälle
 const useCaseData = {
-    experte: [
+    technik: [
       // Die fehlerhafte Zeile "const useCases = [" wurde hier entfernt
       {
       id: 'tourism',
@@ -231,7 +232,7 @@ const useCaseData = {
       }
     }
   ],
-  verwaltung: [
+  details: [
     {
       id: 'tourism', // Wir verwenden dieselbe ID, da es der gleiche Anwendungsfall ist
       title: 'Frühwarnsystem für Badegewässer',
@@ -285,7 +286,7 @@ const useCaseData = {
       }
     }
   ],
-  buerger: [ // Die Bürgeransicht bleibt vereinfacht
+  überblick: [ // Die Bürgeransicht bleibt vereinfacht
       { id: 'tourism', title: 'Für Tourismus & Freizeit', icon: Ship, summary: 'Bessere Vorhersagen von Algenblüten können unnötige Sperrungen von Badeseen vermeiden. Das bedeutet mehr sicheren Badespaß für Sie und verlässlichere Einnahmen für Hotels und Gaststätten.' },
       { id: 'farming', title: 'Für Umwelt & Landwirtschaft', icon: Sprout, summary: 'Landwirte können ihre Felder gezielter bewässern und düngen. Das spart nicht nur Wasser, sondern schützt auch unsere Seen vor überschüssigen Nährstoffen.' },
       { id: 'innovation', title: 'Für unsere Region', icon: Lightbulb, summary: 'Unternehmen und Tüftler aus der Region können diese öffentlichen Daten nutzen, um neue Apps und Dienstleistungen zu entwickeln. Das schafft Arbeitsplätze und fördert die lokale Wirtschaft.' }
@@ -667,7 +668,7 @@ const IntroModal = ({ show, onClose }) => {
               <p className="text-sm mb-3">Diese Anwendung ist in logische Prozessschritte unterteilt, die Sie auf verschiedene Weisen erkunden können:</p>
               <ul className="list-decimal list-outside pl-5 text-sm space-y-2">
                 <li><b>Prozess-Schritte (links):</b> Die Hauptnavigation führt Sie chronologisch durch den gesamten Daten-Aufbereitungsprozess.</li>
-                <li><b>Info-Level (oben rechts):</b> Wählen Sie Ihre Perspektive! Wechseln Sie zwischen "Bürger", "Verwaltung" und "Experte", um maßgeschneiderte Erklärungen und Darstellungen zu sehen.</li>
+                <li><b>Info-Level (oben rechts):</b> Wählen Sie Ihre Perspektive! Wechseln Sie zwischen "Überblickr", "Details" und "Technik", um maßgeschneiderte Erklärungen und Darstellungen zu sehen.</li>
                 <li><b>Detail-Ansichten (aufklappbare Bereiche):</b> Jeder Prozessschritt enthält aufklappbare Bereiche. Ein Klick auf einen Titel öffnet die detaillierten Inhalte.</li>
                 <li><b>Interaktive Elemente:</b> Halten Sie Ausschau nach klickbaren Grafiken und "(Erklärung)"-Buttons, um noch tiefer in die Materie einzutauchen.</li>
               </ul>
@@ -720,7 +721,7 @@ function App() {
   const [codeExplanation, setCodeExplanation] = useState(null);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
-  const [userLevel, setUserLevel] = useState('verwaltung');
+  const [detailLevel, setDetailLevel] = useState('details');
   const [activeStep, setActiveStep] = useState(0);
   const [comments, setComments] = useState({});
   const [newComment, setNewComment] = useState({});
@@ -754,7 +755,7 @@ function App() {
             text: newComment[commentKey],
             author: 'Aktueller Nutzer',
             timestamp: new Date().toLocaleString('de-DE'),
-            level: userLevel
+            level: detailLevel
           }
         ]
       };
@@ -774,32 +775,102 @@ function App() {
 
   const getLevelIcon = (level) => {
     switch(level) {
-      case 'experte': return <Beaker className="w-4 h-4" />;
-      case 'verwaltung': return <Building2 className="w-4 h-4" />;
-      case 'buerger': return <Users className="w-4 h-4" />;
+      case 'technik': return <Beaker className="w-4 h-4" />;
+      case 'details': return <Building2 className="w-4 h-4" />;
+      case 'überblick': return <Users className="w-4 h-4" />;
       default: return null;
     }
   };
 
   const getLevelColor = (level) => {
     switch(level) {
-      case 'experte': return 'text-purple-600 bg-purple-50 dark:text-purple-400 dark:bg-purple-900/20';
-      case 'verwaltung': return 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/20';
-      case 'buerger': return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/20';
+      case 'technik': return 'text-purple-600 bg-purple-50 dark:text-purple-400 dark:bg-purple-900/20';
+      case 'details': return 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/20';
+      case 'überblick': return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/20';
       default: return '';
     }
   };
 
   const steps = [
+    // Nutzen & Anwendungsfälle
+  {
+    id: 'nutzen-anwendungsfaelle',
+    title: 'Nutzen & Anwendungsfälle',
+    icon: <Sparkles className="w-6 h-6" />,
+    intro: {
+      technik: 'Konkrete Best-Practice-Beispiele und neue Ideen, wie die aufbereiteten Daten von verschiedenen Akteuren gewinnbringend genutzt werden können.',
+      details: 'Konkrete Best-Practice-Beispiele und neue Ideen, wie die aufbereiteten Daten von verschiedenen Akteuren gewinnbringend genutzt werden können.',
+      überblick: 'Was kann man mit diesen Daten eigentlich anfangen? Konkrete Beispiele für alle.'
+    },
+    sections: [{
+      id: 'use-cases',
+      title: 'Beispiele und Ideen',
+      content: {
+        technik: (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {useCaseData.technik.map(useCase => (
+                <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-purple-100 dark:bg-purple-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-purple-600 dark:text-purple-400" /></div>
+                    <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ),
+        details: (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Neben dem allgemeinen Potenzial sind für die Verwaltung vor allem Anwendungsfälle relevant, die direkt bei der Erfüllung hoheitlicher Aufgaben, der Effizienzsteigerung und der Risikominimierung unterstützen.
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {useCaseData.details.map(useCase => (
+                <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
+                    <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ),
+        überblick: (
+          <div className="space-y-4">
+            {useCaseData.überblick.map(useCase => (
+              <div key={useCase.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-lg"><useCase.icon className="w-5 h-5 text-green-600 dark:text-green-400" /></div>
+                  <h6 className="font-semibold">{useCase.title}</h6>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{useCase.summary}</p>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    }]
+  },
   // 1. Einleitung
   {
     id: 'einleitung-motivation',
     title: 'Von Rohdaten zu wertvoller Information',
     icon: <Zap className="w-6 h-6" />,
     intro: {
-      experte: 'Die strategische Motivation und der wissenschaftliche sowie gesellschaftliche Mehrwert des Projekts zur Aufbereitung von Wasserqualitätsdaten.',
-      verwaltung: 'Die strategische Motivation und der wissenschaftliche sowie gesellschaftliche Mehrwert des Projekts zur Aufbereitung von Wasserqualitätsdaten.',
-      buerger: 'Warum betreiben wir diesen Aufwand? Der Weg von einer einfachen Messung im See zu einer verlässlichen Information für alle.'
+      technik: 'Die strategische Motivation und der wissenschaftliche sowie gesellschaftliche Mehrwert des Projekts zur Aufbereitung von Wasserqualitätsdaten.',
+      details: 'Die strategische Motivation und der wissenschaftliche sowie gesellschaftliche Mehrwert des Projekts zur Aufbereitung von Wasserqualitätsdaten.',
+      überblick: 'Warum betreiben wir diesen Aufwand? Der Weg von einer einfachen Messung im See zu einer verlässlichen Information für alle.'
     }, // KORREKTUR: Das 'intro'-Objekt wird hier geschlossen.
     
     // KORREKTUR: Das 'sections'-Array ist jetzt ein eigenes Property, kein Teil von 'intro'.
@@ -808,9 +879,9 @@ function App() {
         id: 'mission-statement-wichtigkeit', // Leichte ID-Anpassung zur Eindeutigkeit
         title: 'Warum dieses Projekt wichtig ist',
         content: {
-          buerger: ( <MotivationCarousel /> ),
-          verwaltung: ( <MotivationCarousel /> ),
-          experte: ( <MotivationCarousel /> )
+          überblick: ( <MotivationCarousel /> ),
+          details: ( <MotivationCarousel /> ),
+          technik: ( <MotivationCarousel /> )
         }
       },
       // KORREKTUR: Der folgende Block war fälschlicherweise ein separates Objekt.
@@ -819,7 +890,7 @@ function App() {
         id: 'mission-statement-vision', // Leichte ID-Anpassung zur Eindeutigkeit
         title: 'Projektvision und Ziele',
         content: {
-          buerger: (
+          überblick: (
             <div className="space-y-4 text-gray-700 dark:text-gray-300">
               <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <h5 className="font-bold text-lg mb-2 text-green-800 dark:text-green-300">🏠 Für Bürgerinnen und Bürger</h5>
@@ -839,7 +910,7 @@ function App() {
               </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-4 text-gray-700 dark:text-gray-300">
               <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <h5 className="font-bold text-lg mb-2 text-blue-800 dark:text-blue-300">🏛️ Für Verwaltung und Politik</h5>
@@ -864,7 +935,7 @@ function App() {
               </div>
             </div>
           ),
-          experte: (
+          technik: (
             <div className="space-y-4 text-gray-700 dark:text-gray-300">
               <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                 <h5 className="font-bold text-lg mb-2 text-purple-800 dark:text-purple-300">🔬 Für Experten und Wissenschaft</h5>
@@ -903,16 +974,16 @@ function App() {
     title: 'Datenaufnahme & Streaming',
     icon: <Database className="w-6 h-6" />,
     intro: {
-      experte: 'Implementierung einer robusten Echtzeit-Datenaufnahme-Pipeline mit Apache Kafka und ereignisgesteuerter Architektur.',
-      verwaltung: 'Einrichtung eines Systems zur automatischen Erfassung der Sensordaten aus den Messstationen.',
-      buerger: 'Die Messstationen senden ihre Daten automatisch an unser System.'
+      technik: 'Implementierung einer robusten Echtzeit-Datenaufnahme-Pipeline mit Apache Kafka und ereignisgesteuerter Architektur.',
+      details: 'Einrichtung eines Systems zur automatischen Erfassung der Sensordaten aus den Messstationen.',
+      überblick: 'Die Messstationen senden ihre Daten automatisch an unser System.'
     },
     sections: [
       {
         id: 'architecture',
         title: 'Systemarchitektur',
         content: {
-          experte: (
+          technik: (
             <>
               {/* KORRIGIERTER EINFÜHRUNGSBLOCK */}
               <div className="mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
@@ -1007,7 +1078,7 @@ function App() {
               </div>
             </>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Systemübersicht</h5>
@@ -1029,7 +1100,7 @@ function App() {
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">So funktioniert's</h5>
@@ -1068,16 +1139,16 @@ function App() {
     title: 'Mehrstufige Datenvalidierung',
     icon: <Shield className="w-6 h-6" />,
     intro: {
-      experte: 'Implementierung eines vierstufigen hierarchischen Validierungsansatzes mit Machine Learning Integration.',
-      verwaltung: 'Automatische Überprüfung der Messdaten auf Plausibilität und technische Fehler.',
-      buerger: 'Die Messwerte werden automatisch auf ihre Richtigkeit überprüft.'
+      technik: 'Implementierung eines vierstufigen hierarchischen Validierungsansatzes mit Machine Learning Integration.',
+      details: 'Automatische Überprüfung der Messdaten auf Plausibilität und technische Fehler.',
+      überblick: 'Die Messwerte werden automatisch auf ihre Richtigkeit überprüft.'
     },
     sections: [
       {
         id: 'validation-levels',
         title: 'Validierungsstufen',
         content: {
-          experte: (
+          technik: (
             <div className="space-y-4">
               {/* Wissenschaftliche Erklärung */}
               <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
@@ -1197,7 +1268,7 @@ function App() {
               </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-4">
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Automatische Qualitätsprüfungen</h5>
@@ -1239,7 +1310,7 @@ function App() {
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Qualitätssicherung Ihrer Daten</h5>
@@ -1279,16 +1350,16 @@ function App() {
     title: 'Tageskonsolidierung',
     icon: <BarChart3 className="w-6 h-6" />,
     intro: {
-      experte: 'Wissenschaftlich fundierte statistische Aggregation mit parameterspezifischen Kennwerten.',
-      verwaltung: 'Zusammenfassung der stündlichen Messwerte zu aussagekräftigen Tageswerten.',
-      buerger: 'Aus den stündlichen Messungen berechnen wir übersichtliche Tageswerte.'
+      technik: 'Wissenschaftlich fundierte statistische Aggregation mit parameterspezifischen Kennwerten.',
+      details: 'Zusammenfassung der stündlichen Messwerte zu aussagekräftigen Tageswerten.',
+      überblick: 'Aus den stündlichen Messungen berechnen wir übersichtliche Tageswerte.'
     },
     sections: [
       {
         id: 'consolidation-methods',
         title: 'Konsolidierungsmethoden',
         content: {
-          experte: (
+          technik: (
             <div className="space-y-4">
               {/* Wissenschaftliche Erklärung */}
               <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
@@ -1386,7 +1457,7 @@ function App() {
               </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Berechnete Tageswerte</h5>
@@ -1427,7 +1498,7 @@ function App() {
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Von Stunden- zu Tageswerten</h5>
@@ -1458,16 +1529,16 @@ function App() {
     title: 'Qualitätskennzeichnung',
     icon: <CheckCircle2 className="w-6 h-6" />,
     intro: {
-      experte: 'Implementierung internationaler Standards (QARTOD, SeaDataNet) für Datenqualitätsflags.',
-      verwaltung: 'Klare Kennzeichnung der Datenqualität für verlässliche Entscheidungen.',
-      buerger: 'Jeder Messwert bekommt eine Qualitätsbewertung, damit Sie wissen, wie verlässlich er ist.'
+      technik: 'Implementierung internationaler Standards (QARTOD, SeaDataNet) für Datenqualitätsflags.',
+      details: 'Klare Kennzeichnung der Datenqualität für verlässliche Entscheidungen.',
+      überblick: 'Jeder Messwert bekommt eine Qualitätsbewertung, damit Sie wissen, wie verlässlich er ist.'
     },
     sections: [
       {
         id: 'flagging-system',
         title: 'Qualitätssystem',
         content: {
-          experte: (
+          technik: (
             <div className="space-y-4">
 
                 {/* HIER DEN NEUEN ERKLÄR-BLOCK EINFÜGEN */}
@@ -1529,7 +1600,7 @@ function App() {
                 </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Qualitätsstufen für Ihre Entscheidungen</h5>
@@ -1550,7 +1621,7 @@ function App() {
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Vertrauen Sie unseren Daten</h5>
@@ -1591,16 +1662,16 @@ function App() {
     title: 'Datenbereitstellung & API',
     icon: <Cloud className="w-6 h-6" />,
     intro: {
-      experte: 'RESTful API mit OGC SensorThings Standard und JSON/WaterML 2.0 Export.',
-      verwaltung: 'Automatisierte Bereitstellung der validierten Daten für verschiedene Nutzergruppen.',
-      buerger: 'Die geprüften Daten werden öffentlich und kostenlos zur Verfügung gestellt.'
+      technik: 'RESTful API mit OGC SensorThings Standard und JSON/WaterML 2.0 Export.',
+      details: 'Automatisierte Bereitstellung der validierten Daten für verschiedene Nutzergruppen.',
+      überblick: 'Die geprüften Daten werden öffentlich und kostenlos zur Verfügung gestellt.'
     },
     sections: [
       {
         id: 'api-design',
         title: 'Schnittstellen & Formate',
         content: {
-          experte: (
+          technik: (
             <div className="space-y-4">
               {/* HIER DEN NEUEN ERKLÄR-BLOCK EINFÜGEN */}
               <div className="mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
@@ -1662,7 +1733,7 @@ async def get_observations(
               </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">Datenzugriff für Ihre Anwendungen</h5>
@@ -1692,7 +1763,7 @@ async def get_observations(
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h5 className="font-semibold mb-2">So kommen Sie an die Daten</h5>
@@ -1722,15 +1793,15 @@ async def get_observations(
     title: 'Detaillierter Prozessablauf (BPMN)',
     icon: <Network className="w-6 h-6" />,
     intro: {
-      experte: 'Eine formale Darstellung des End-to-End-Prozesses von der Datenerfassung bis zur Bereitstellung nach dem BPMN 2.0 Standard.',
-      verwaltung: 'Eine formale Darstellung des End-to-End-Prozesses von der Datenerfassung bis zur Bereitstellung nach dem BPMN 2.0 Standard.',
-      buerger: 'Ein detaillierter Blick auf alle Schritte, die unsere Daten durchlaufen.'
+      technik: 'Eine formale Darstellung des End-to-End-Prozesses von der Datenerfassung bis zur Bereitstellung nach dem BPMN 2.0 Standard.',
+      details: 'Eine formale Darstellung des End-to-End-Prozesses von der Datenerfassung bis zur Bereitstellung nach dem BPMN 2.0 Standard.',
+      überblick: 'Ein detaillierter Blick auf alle Schritte, die unsere Daten durchlaufen.'
     },
     sections: [{
       id: 'prozess-modell',
       title: 'Prozessmodell',
       content: {
-        experte: (
+        technik: (
           <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <p>Das BPMN-Modell (Business Process Model and Notation) zeigt den vollständigen Datenverarbeitungsprozess von den WAMO-Sensoren bis zur Open Data Plattform. Es umfasst:</p>
             
@@ -1780,7 +1851,7 @@ async def get_observations(
             </div>
           </div>
         ),
-        verwaltung: (
+        details: (
           <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <p>Das BPMN-Modell (Business Process Model and Notation) zeigt den vollständigen Datenverarbeitungsprozess von den WAMO-Sensoren bis zur Open Data Plattform. Es umfasst:</p>
             
@@ -1821,7 +1892,7 @@ async def get_observations(
             </div>
           </div>
         ),
-        buerger: (
+        überblick: (
         <div className="space-y-6 text-gray-700 dark:text-gray-300">
           {/* IHR VOLLSTÄNDIGER TEXT */}
           <div className="space-y-4">
@@ -1899,91 +1970,21 @@ async def get_observations(
       }
     }]
   },
-  // NEU: 3. Nutzen & Anwendungsfälle
-  {
-    id: 'nutzen-anwendungsfaelle',
-    title: 'Nutzen & Anwendungsfälle',
-    icon: <Sparkles className="w-6 h-6" />,
-    intro: {
-      experte: 'Konkrete Best-Practice-Beispiele und neue Ideen, wie die aufbereiteten Daten von verschiedenen Akteuren gewinnbringend genutzt werden können.',
-      verwaltung: 'Konkrete Best-Practice-Beispiele und neue Ideen, wie die aufbereiteten Daten von verschiedenen Akteuren gewinnbringend genutzt werden können.',
-      buerger: 'Was kann man mit diesen Daten eigentlich anfangen? Konkrete Beispiele für alle.'
-    },
-    sections: [{
-      id: 'use-cases',
-      title: 'Beispiele und Ideen',
-      content: {
-        experte: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Die Nutzung von Wasserdaten durchläuft einen Paradigmenwechsel: von reiner Regulierung hin zu einem strategischen Vermögenswert. Die folgenden Beispiele illustrieren das wirtschaftliche und gesellschaftliche Potenzial.
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {useCaseData.experte.map(useCase => (
-                <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-purple-100 dark:bg-purple-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-purple-600 dark:text-purple-400" /></div>
-                    <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
-                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ),
-        verwaltung: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Neben dem allgemeinen Potenzial sind für die Verwaltung vor allem Anwendungsfälle relevant, die direkt bei der Erfüllung hoheitlicher Aufgaben, der Effizienzsteigerung und der Risikominimierung unterstützen.
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {useCaseData.verwaltung.map(useCase => (
-                <button key={useCase.id} onClick={() => setSelectedUseCase(useCase)} className="text-left bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg flex flex-col space-y-3 border dark:border-gray-700 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-500 transition-all">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg"><useCase.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" /></div>
-                    <h5 className="font-bold text-gray-800 dark:text-gray-200">{useCase.title}</h5>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{useCase.target}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">{useCase.summary}</p>
-                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Mehr erfahren...</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ),
-        buerger: (
-          <div className="space-y-4">
-            {useCaseData.buerger.map(useCase => (
-              <div key={useCase.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-lg"><useCase.icon className="w-5 h-5 text-green-600 dark:text-green-400" /></div>
-                  <h6 className="font-semibold">{useCase.title}</h6>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{useCase.summary}</p>
-              </div>
-            ))}
-          </div>
-        )
-      }
-    }]
-  },
     // NEU: 4. Code-Katalog
   {
     id: 'code-katalog',
     title: 'Code-Katalog',
     icon: <Code className="w-6 h-6" />,
     intro: {
-      experte: 'Der vollständige, produktive Python-Code (später Open-Source zur Nachnutzung) für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
-      verwaltung: 'Der vollständige, produktive Python-Code (später Open-Source zur Nachnutzung) für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
-      buerger: 'Der offengelegte Programmcode (später Open-Source zur Nachnutzung), der für die Prüfung und Aufbereitung der Daten verwendet wird.'
+      technik: 'Der vollständige, produktive Python-Code (später Open-Source zur Nachnutzung) für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
+      details: 'Der vollständige, produktive Python-Code (später Open-Source zur Nachnutzung) für die gesamte Datenverarbeitungs-Pipeline, transparent und nachnutzbar.',
+      überblick: 'Der offengelegte Programmcode (später Open-Source zur Nachnutzung), der für die Prüfung und Aufbereitung der Daten verwendet wird.'
     },
     sections: [{
       id: 'code-collection',
       title: 'Python-Skripte',
       content: {
-        experte: (
+        technik: (
             <div className="space-y-4 text-sm">
                 <p className="text-gray-600 dark:text-gray-400">
                   Dieser Katalog zentralisiert die Kern-Logiken der Datenverarbeitungspipeline. Die folgenden Python-Skripte dienen als Referenzimplementierung und Grundlage für das operative System. Zukünftig sollen sie als Open Source zur Verfügung gestellt werden.
@@ -2096,7 +2097,7 @@ async def get_observations(
                 ))}
               </div>
         ),
-        verwaltung: (
+        details: (
             <div className="space-y-4 text-sm">
                 <p className="text-gray-600 dark:text-gray-400">
                   Dieser Katalog zentralisiert die Kern-Logiken der Datenverarbeitungspipeline. Die folgenden Python-Skripte dienen als Referenzimplementierung und Grundlage für das operative System. Zukünftig sollen sie als Open Source zur Verfügung gestellt werden.
@@ -2209,7 +2210,7 @@ async def get_observations(
                 ))}
               </div>
         ),
-        buerger: (
+        überblick: (
           <div className="space-y-6 text-sm text-gray-700 dark:text-gray-300">
             <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <h6 className="font-semibold text-green-800 dark:text-green-300 mb-2">Wie funktioniert die Datenverarbeitung im Hintergrund?</h6>
@@ -2253,16 +2254,16 @@ async def get_observations(
     title: 'Kosten-Nutzen-Analyse',
     icon: <Scale className="w-6 h-6" />,
     intro: {
-      experte: 'Eine strategische Gegenüberstellung der Kosten, Flexibilität und langfristigen Wartung zwischen einer maßgeschneiderten Eigenentwicklung und dem Zukauf von Standardsoftware.',
-      verwaltung: 'Eine strategische Gegenüberstellung der Kosten, Flexibilität und langfristigen Wartung zwischen einer maßgeschneiderten Eigenentwicklung und dem Zukauf von Standardsoftware.',
-      buerger: 'Hier wird abgewogen, ob es besser ist, die Software für dieses Projekt selbst zu entwickeln oder eine fertige Lösung zu kaufen.'
+      technik: 'Eine strategische Gegenüberstellung der Kosten, Flexibilität und langfristigen Wartung zwischen einer maßgeschneiderten Eigenentwicklung und dem Zukauf von Standardsoftware.',
+      details: 'Eine strategische Gegenüberstellung der Kosten, Flexibilität und langfristigen Wartung zwischen einer maßgeschneiderten Eigenentwicklung und dem Zukauf von Standardsoftware.',
+      überblick: 'Hier wird abgewogen, ob es besser ist, die Software für dieses Projekt selbst zu entwickeln oder eine fertige Lösung zu kaufen.'
     },
     sections: [
       {
         id: 'comparison',
         title: 'Eigenentwicklung vs. Softwarekauf',
         content: {
-          experte: (
+          technik: (
             <div className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Option 1: Eigenentwicklung */}
@@ -2342,7 +2343,7 @@ async def get_observations(
               </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             // Der Inhalt für "verwaltung" ist identisch mit "experte"
             <div className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
@@ -2421,7 +2422,7 @@ async def get_observations(
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
               <h3 className="font-bold text-lg mb-2">Selber machen oder kaufen?</h3>
               <p className="text-sm">Bei der Entwicklung einer solchen Plattform stellt sich immer die Frage: Baut man die Software selbst oder kauft man eine fertige Lösung? Für dieses Projekt wurde entschieden, die Software selbst zu entwickeln. Das ist langfristig günstiger, flexibler und das Wissen darüber, wie alles funktioniert, bleibt hier bei uns im Landkreis.</p>
@@ -2436,18 +2437,18 @@ async def get_observations(
     title: 'Anwendungs-Showcase: Die Daten in Aktion',
     icon: <LayoutTemplate className="w-6 h-6" />,
     intro: {
-      experte: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden.',
-      verwaltung: 'Die folgenden Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert für die Verwaltung, Bürger und Interessengruppen schaffen.',
-      buerger: 'Was passiert eigentlich mit all den Daten? Hier sehen Sie an Beispielen, wie aus den Messungen nützliche Apps für den Alltag und die Verwaltung entstehen können.'
+      technik: 'Daten und Prozesse sind die eine Seite – der erlebbare Nutzen für den Menschen die andere. Die folgenden Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden.',
+      details: 'Die folgenden Prototypen zeigen, wie die validierten Daten in konkrete, zielgruppengerechte Anwendungen münden und so einen echten Mehrwert für die Verwaltung, Bürger und Interessengruppen schaffen.',
+      überblick: 'Was passiert eigentlich mit all den Daten? Hier sehen Sie an Beispielen, wie aus den Messungen nützliche Apps für den Alltag und die Verwaltung entstehen können.'
     },
     sections: [
       {
         id: 'app-prototypes',
         title: 'Interaktive App-Prototypen',
         content: {
-          experte: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> ),
-          verwaltung: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> ),
-          buerger: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> )
+          technik: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> ),
+          details: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> ),
+          überblick: ( <AppShowcaseComponent onImageClick={setModalImageUrl} /> )
         }
       }
     ]
@@ -2457,16 +2458,16 @@ async def get_observations(
     title: 'Referenzen & Quellen',
     icon: <BookCopy className="w-6 h-6" />,
     intro: {
-      experte: 'Eine Sammlung der wissenschaftlichen, technischen und regulatorischen Quellen, die als Grundlage für dieses Projekt dienen.',
-      verwaltung: 'Eine Sammlung der wissenschaftlichen, technischen und regulatorischen Quellen, die als Grundlage für dieses Projekt dienen.',
-      buerger: 'Hier finden Sie Links zu weiterführenden Informationen zum Thema Wasserqualität und den Grundlagen dieses Projekts.'
+      technik: 'Eine Sammlung der wissenschaftlichen, technischen und regulatorischen Quellen, die als Grundlage für dieses Projekt dienen.',
+      details: 'Eine Sammlung der wissenschaftlichen, technischen und regulatorischen Quellen, die als Grundlage für dieses Projekt dienen.',
+      überblick: 'Hier finden Sie Links zu weiterführenden Informationen zum Thema Wasserqualität und den Grundlagen dieses Projekts.'
     },
     sections: [
       {
         id: 'source-list',
         title: 'Quellenverzeichnis',
         content: {
-          experte: (
+          technik: (
             <div className="space-y-6 text-sm">
               <div>
                 <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Wissenschaftliche Publikationen</h5>
@@ -2500,7 +2501,7 @@ async def get_observations(
               </div>
             </div>
           ),
-          verwaltung: (
+          details: (
             <div className="space-y-6 text-sm">
               <div>
                 <h5 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Wissenschaftliche Publikationen</h5>
@@ -2534,7 +2535,7 @@ async def get_observations(
               </div>
             </div>
           ),
-          buerger: (
+          überblick: (
             <div className="space-y-4 text-sm">
               <p className="mb-2">Hier finden Sie eine Auswahl an Links zu allgemeinen Informationen rund um das Thema Wasserqualität:</p>
               <ul className="list-disc list-inside space-y-2">
@@ -2564,11 +2565,12 @@ async def get_observations(
 
   const filteredSteps = steps.filter(step => 
     step.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    step.intro[userLevel].toLowerCase().includes(searchTerm.toLowerCase())
+    (step.intro[detailLevel] || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50'}`}>
+      <HeroSection />
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -2610,37 +2612,37 @@ async def get_observations(
               
               <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                 <button
-                  onClick={() => setUserLevel('buerger')}
+                  onClick={() => setDetailLevel('überblick')}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                    userLevel === 'buerger' 
+                    detailLevel === 'überblick' 
                       ? 'bg-white dark:bg-gray-600 text-green-600 dark:text-green-400 shadow-sm' 
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
-                  <Users className="w-4 h-4 inline mr-1" />
-                  Bürger
+                  <Info className="w-4 h-4 inline mr-1" />
+                  Überblick
                 </button>
                 <button
-                  onClick={() => setUserLevel('verwaltung')}
+                  onClick={() => setDetailLevel('details')}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                    userLevel === 'verwaltung' 
+                    detailLevel === 'details' 
                       ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' 
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
-                  <Building2 className="w-4 h-4 inline mr-1" />
-                  Verwaltung
+                  <ClipboardList className="w-4 h-4 inline mr-1" />
+                  Details
                 </button>
                 <button
-                  onClick={() => setUserLevel('experte')}
+                  onClick={() => setDetailLevel('technik')}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                    userLevel === 'experte' 
+                    detailLevel === 'technik' 
                       ? 'bg-white dark:bg-gray-600 text-purple-600 dark:text-purple-400 shadow-sm' 
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
-                  <Beaker className="w-4 h-4 inline mr-1" />
-                  Experte
+                  <Code className="w-4 h-4 inline mr-1" />
+                  Technik
                 </button>
               </div>
             </div>
@@ -2708,56 +2710,71 @@ async def get_observations(
                 <h2 className="text-2xl font-bold">{filteredSteps[activeStep]?.title}</h2>
               </div>
               
-              <div className={`p-4 rounded-lg ${getLevelColor(userLevel)}`}>
+              <div className={`p-4 rounded-lg ${getLevelColor(detailLevel)}`}>
                 <div className="flex items-center space-x-2 mb-2">
-                  {getLevelIcon(userLevel)}
+                  {getLevelIcon(detailLevel)}
                   <span className="text-sm font-medium">
-                    {userLevel === 'experte' ? 'Expertenansicht' : 
-                     userLevel === 'verwaltung' ? 'Verwaltungsansicht' : 'Bürgeransicht'}
+                    {detailLevel === 'technik' ? 'Technische Ansicht' : 
+                     detailLevel === 'details' ? 'Detail-Ansicht' : 'Überblick'}
                   </span>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300">
-                  {filteredSteps[activeStep]?.intro[userLevel]}
+                  {filteredSteps[activeStep]?.intro[detailLevel]}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between mb-8">
+            {/* Navigation mit kontextbezogenen Titeln */}
+            <div className="flex items-stretch justify-between mb-8">
+              {/* Vorheriger Schritt Button */}
               <button
                 onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
                 disabled={activeStep === 0}
-                className={`px-4 py-2 rounded-md flex items-center space-x-2 ${
+                className={`px-4 py-2 rounded-md flex items-center space-x-2 w-1/3 transition-colors ${
                   activeStep === 0 
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' 
-                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed' 
+                    : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Vorheriger Schritt</span>
+                <div className="text-left">
+                  <span className="text-sm font-medium">Vorheriger Schritt</span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {activeStep > 0 && filteredSteps[activeStep - 1]?.title}
+                  </span>
+                </div>
               </button>
               
-              <div className="flex space-x-2">
+              {/* Navigations-Punkte in der Mitte */}
+              <div className="flex items-center justify-center space-x-2">
                 {filteredSteps.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveStep(idx)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      idx === activeStep ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+                    className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                      idx === activeStep ? 'bg-blue-600 scale-125' : 'bg-gray-300 dark:bg-gray-600 hover:bg-blue-400'
                     }`}
+                    aria-label={`Gehe zu Schritt ${idx + 1}`}
                   />
                 ))}
               </div>
               
+              {/* Nächster Schritt Button */}
               <button
                 onClick={() => setActiveStep(Math.min(filteredSteps.length - 1, activeStep + 1))}
                 disabled={activeStep === filteredSteps.length - 1}
-                className={`px-4 py-2 rounded-md flex items-center space-x-2 ${
+                className={`px-4 py-2 rounded-md flex items-center justify-end space-x-2 w-1/3 transition-colors ${
                   activeStep === filteredSteps.length - 1 
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' 
+                    ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed' 
                     : 'bg-blue-600 text-white hover:bg-blue-700'
                 }`}
               >
-                <span>Nächster Schritt</span>
+                <div className="text-right">
+                  <span className="text-sm font-medium">Nächster Schritt</span>
+                  <span className={`block text-xs truncate ${activeStep === filteredSteps.length - 1 ? 'text-gray-400' : 'text-blue-200'}`}>
+                    {activeStep < filteredSteps.length - 1 && filteredSteps[activeStep + 1]?.title}
+                  </span>
+                </div>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -2829,7 +2846,7 @@ async def get_observations(
                     {isExpanded && (
                       <div className="px-6 pb-6 animate-in slide-in-from-top duration-200">
                         <div className="pt-4 border-t dark:border-gray-700">
-                          {section.content[userLevel]}
+                          {section.content[detailLevel]}
                         </div>
                         
                         {/* Collaboration Section */}
@@ -2851,8 +2868,8 @@ async def get_observations(
                                       <User className="w-4 h-4 text-gray-400" />
                                       <span className="text-sm font-medium">{comment.author}</span>
                                       <span className={`text-xs px-2 py-0.5 rounded-full ${getLevelColor(comment.level)}`}>
-                                        {comment.level === 'experte' ? 'Experte' : 
-                                         comment.level === 'verwaltung' ? 'Verwaltung' : 'Bürger'}
+                                        {comment.level === 'technik' ? 'Technik' : 
+                                         comment.level === 'details' ? 'Details' : 'Überblick'}
                                       </span>
                                     </div>
                                     <span className="text-xs text-gray-500">{comment.timestamp}</span>

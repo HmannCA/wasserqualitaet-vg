@@ -31,8 +31,8 @@ function AppShowcaseComponent({ onImageClick }) { // <-- Prop hier empfangen
                 </div>
               </div>
               <div className="space-y-4">
-                 <button onClick={() => onImageClick('src/assets/Mockup_1.png')} className="group block w-full text-left p-2 bg-gray-200 dark:bg-gray-700 rounded-lg transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                    <img src="src/assets/Mockup_1.png" alt="Startbildschirm der See-Check App" className="rounded-md shadow-lg w-full" />
+                 <button onClick={() => onImageClick('/Mockup_1.png')} className="group block w-full text-left p-2 bg-gray-200 dark:bg-gray-700 rounded-lg transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                    <img src="/Mockup_1.png" alt="Startbildschirm der See-Check App" className="rounded-md shadow-lg w-full" />
                     <span className="text-xs text-center block mt-2 text-gray-500 group-hover:text-blue-500 transition-colors">Klicken zum Vergrößern</span>
                  </button>
               </div>
@@ -62,8 +62,8 @@ function AppShowcaseComponent({ onImageClick }) { // <-- Prop hier empfangen
                   </ul>
                 </div>
               </div>
-              <button onClick={() => onImageClick('src/assets/Mockup_2.png')} className="group block w-full text-left p-2 bg-gray-200 dark:bg-gray-700 rounded-lg transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                <img src="src/assets/Mockup_2.png" alt="Dashboard der Petri-Profi App" className="rounded-md shadow-lg w-full" />
+              <button onClick={() => onImageClick('/Mockup_2.png')} className="group block w-full text-left p-2 bg-gray-200 dark:bg-gray-700 rounded-lg transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                <img src="/Mockup_2.png" alt="Dashboard der Petri-Profi App" className="rounded-md shadow-lg w-full" />
                 <span className="text-xs text-center block mt-2 text-gray-500 group-hover:text-blue-500 transition-colors">Klicken zum Vergrößern</span>
               </button>
             </div>
@@ -92,8 +92,8 @@ function AppShowcaseComponent({ onImageClick }) { // <-- Prop hier empfangen
                   </ul>
                 </div>
               </div>
-              <button onClick={() => onImageClick('src/assets/Mockup_3.png')} className="group block w-full text-left p-2 bg-gray-200 dark:bg-gray-700 rounded-lg transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                <img src="src/assets/Mockup_3.png" alt="Dashboard des Digitalen Lageberichts" className="rounded-md shadow-lg w-full" />
+              <button onClick={() => onImageClick('/Mockup_3.png')} className="group block w-full text-left p-2 bg-gray-200 dark:bg-gray-700 rounded-lg transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                <img src="/Mockup_3.png" alt="Dashboard des Digitalen Lageberichts" className="rounded-md shadow-lg w-full" />
                 <span className="text-xs text-center block mt-2 text-gray-500 group-hover:text-blue-500 transition-colors">Klicken zum Vergrößern</span>
               </button>
             </div>
