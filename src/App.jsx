@@ -5,6 +5,7 @@ import bpmnProzessExperte from './assets/bpmn-prozess.png';
 import bpmnProzessBuerger from './assets/bpmn-prozess-buerger.png';
 import AppShowcaseComponent from './components/AppShowcaseComponent';
 import HeroSection from './components/HeroSection';
+import LoginModal from './components/LoginModal';
 
 // Komponente für das interaktive Einführungs-Carousel
 // Komponente für das interaktive Einführungs-Carousel
@@ -729,6 +730,103 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    // Prüft, ob ein Nutzer im Browser-Speicher gespeichert ist
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+      setShowLoginModal(false); // Wenn Nutzer da ist, Login-Modal nicht zeigen
+    } else {
+      // Wenn kein Nutzer da ist, prüfen ob die Einführung gezeigt werden muss
+      const hasSeenIntro = localStorage.getItem('hasSeenIntroModal');
+      if (hasSeenIntro === 'true') {
+        // Einführung wurde schon gesehen, also direkt Login zeigen
+        setShowLoginModal(true);
+      } else {
+        // Zuerst die Einführung zeigen
+        setShowIntroModal(true);
+      }
+    }
+
+    const savedComments = localStorage.getItem('waterQualityComments');
+    if (savedComments) {
+      setComments(JSON.parse(savedComments));
+    }
+  }, []);
+
+// Diese Funktion wird aufgerufen, wenn der Nutzer das EINFÜHRUNGS-Modal schließt
+  const handleIntroClose = () => {
+    setShowIntroModal(false);
+    // Wenn die Einführung geschlossen wird UND der Nutzer noch nicht angemeldet ist,
+    // wird jetzt das Login-Modal getriggert.
+    if (!currentUser) {
+      setShowLoginModal(true);
+    }
+  };
+
+  const handleLogin = async (userData) => {
+    // userData enthält jetzt { ..., wantsNotifications: 'daily' } (oder 'immediate'/'none')
+    console.log("Neuer Login:", userData);
+    
+    // Wir benennen die Eigenschaft für mehr Klarheit um
+    const userToSave = {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      notificationFrequency: userData.wantsNotifications 
+    };
+
+    setCurrentUser(userToSave);
+    localStorage.setItem('currentUser', JSON.stringify(userToSave));
+    setShowLoginModal(false);
+
+    try {
+      await fetch('http://localhost:3001/api/user-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userToSave) // Sende das Objekt mit der Frequenz
+      });
+    } catch (error) {
+      console.error('Fehler beim Synchronisieren der Nutzerdaten:', error);
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('currentUser');
+    setShowLoginModal(true); // Nach dem Logout das Login-Modal wieder anzeigen
+  };
+
+  
+
+  const handleNotificationChange = async (event) => {
+    if (!currentUser) return;
+
+    const wantsNotifications = event.target.checked;
+
+    // 1. Erstelle das aktualisierte Nutzerobjekt
+    const updatedUser = { ...currentUser, wantsNotifications };
+
+    // 2. Aktualisiere den State und den lokalen Speicher im Frontend
+    setCurrentUser(updatedUser);
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+
+    // 3. Sende die Änderung an das Backend, um die "Datenbank" zu aktualisieren
+    try {
+      await fetch('http://localhost:3001/api/user-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedUser)
+      });
+      console.log(`Benachrichtigungs-Status für ${currentUser.email} auf ${wantsNotifications} gesetzt.`);
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren der Benachrichtigungs-Einstellung:', error);
+    }
+  };
+
 
   useEffect(() => {
     const savedComments = localStorage.getItem('waterQualityComments');
@@ -744,24 +842,43 @@ function App() {
     }
   }, []);
 
-  const saveComment = (stepId, sectionId) => {
+  const saveComment = async (stepId, sectionId) => {
     const commentKey = `${stepId}-${sectionId}`;
-    if (newComment[commentKey]?.trim()) {
+    if (newComment[commentKey]?.trim() && currentUser) {
+      const newCommentData = {
+        text: newComment[commentKey],
+        author: `${currentUser.firstName} ${currentUser.lastName}`,
+        timestamp: new Date().toLocaleString('de-DE'),
+        level: detailLevel
+      };
+
       const updatedComments = {
         ...comments,
         [commentKey]: [
           ...(comments[commentKey] || []),
-          {
-            text: newComment[commentKey],
-            author: 'Aktueller Nutzer',
-            timestamp: new Date().toLocaleString('de-DE'),
-            level: detailLevel
-          }
+          newCommentData
         ]
       };
       setComments(updatedComments);
       localStorage.setItem('waterQualityComments', JSON.stringify(updatedComments));
       setNewComment({ ...newComment, [commentKey]: '' });
+
+      const MOCK_RECIPIENTS = ["Sven.Huettemann@kreis-vg.de"];
+      console.log("Versuche jetzt, die Benachrichtigungs-Anfrage zu senden...");
+      try {
+        await fetch('http://localhost:3001/api/send-notification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            author: currentUser, // Übergebe das ganze Nutzer-Objekt, inkl. E-Mail
+            commentText: newCommentData.text,
+            stepTitle: steps.find(s => s.id === stepId)?.title,
+            sectionTitle: steps.find(s => s.id === stepId)?.sections.find(sec => sec.id === sectionId)?.title,
+          }),
+        });
+      } catch (error) {
+        console.error('Netzwerkfehler beim Aufruf des Mailer-Service:', error);
+      }
     }
   };
 
@@ -2585,7 +2702,7 @@ async def get_observations(
               <div className="flex items-center space-x-2">
                 <Droplets className="w-8 h-8 text-blue-500" />
                 <div>
-                  <h1 className="text-xl font-bold">Digitale Gewässergüte-Messstationen  | LK Vorpommern-Greifswald</h1>
+                  <h1 className="text-xl font-bold">Digitale Gewässergüte-Messstationen</h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Von Rohdaten zu wertvoller Information -{'>'} Automatische Validierung & Open Data</p>
                 </div>
               </div>
@@ -2609,6 +2726,30 @@ async def get_observations(
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
+
+              {currentUser ? (
+                    <div className="flex items-center space-x-4">
+                        {/* Checkbox für Benachrichtigungen */}
+                        <label htmlFor="notifyToggle" className="flex items-center cursor-pointer text-sm">
+                            <input 
+                                id="notifyToggle" 
+                                type="checkbox" 
+                                checked={currentUser.wantsNotifications} 
+                                onChange={handleNotificationChange}
+                                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                            <span className="ml-2 text-gray-600 dark:text-gray-300">Benachrichtigungen</span>
+                        </label>
+                        
+                        {/* Nutzername und Logout */}
+                        <div className="flex items-center space-x-2 border-l border-gray-200 dark:border-gray-600 pl-4">
+                            <span className="text-sm font-medium">Hallo, {currentUser.firstName}!</span>
+                            <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-blue-600 dark:hover:text-blue-400" title="Abmelden">(Abmelden)</button>
+                        </div>
+                    </div>
+                ) : (
+                    <button onClick={() => setShowLoginModal(true)} className="text-sm font-medium text-blue-600 hover:underline">Anmelden</button>
+                )}
               
               <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                 <button
@@ -2911,7 +3052,8 @@ async def get_observations(
       <ImageModal imageUrl={modalImageUrl} onClose={() => setModalImageUrl(null)} />
       <UseCaseModal useCase={selectedUseCase} onClose={() => setSelectedUseCase(null)} />
       <ExplanationModal explanation={codeExplanation} onClose={() => setCodeExplanation(null)} />
-      <IntroModal show={showIntroModal} onClose={() => setShowIntroModal(false)} />
+      <IntroModal show={showIntroModal} onClose={handleIntroClose} />
+      <LoginModal show={showLoginModal} onLogin={handleLogin} />
     </div>
   );
 }
